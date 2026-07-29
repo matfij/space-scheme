@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es2023",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "allowImportingTsExtensions": true,
+        "allowArbitraryExtensions": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true
+    }
+}
