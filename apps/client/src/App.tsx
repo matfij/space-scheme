@@ -1,5 +1,5 @@
-import { GAME_NAME } from "@space/shared";
+import { GameComponent } from "./game/game-component";
 
 export const App = () => {
-    return <h1>{GAME_NAME}</h1>;
+    return <GameComponent />;
 };
