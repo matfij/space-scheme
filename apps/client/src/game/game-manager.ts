@@ -3,13 +3,14 @@ import { Application, Container, Graphics } from "pixi.js";
 import { InputManager } from "./input-manager";
 
 const speed = 300;
+const rotationSpeed = 3;
 
 export class GameManager {
     private isInitialized = false;
     private isDestroyed = false;
     readonly app = new Application();
     readonly map = new Container();
-    player = { ship: new Graphics(), x: 200, y: 200, r: 0 };
+    player = { ship: new Graphics(), x: 200, y: 200, rot: 0, tRot: 0, vx: 0, vy: 0 };
 
     async initialize(container: HTMLElement) {
         await this.app.init({
@@ -59,20 +60,44 @@ export class GameManager {
     }
 
     update(dt: number) {
-        if (InputManager.isPressed("KeyW")) {
-            this.player.y -= speed * dt;
-        }
-        if (InputManager.isPressed("KeyS")) {
-            this.player.y += speed * dt;
-        }
+        let dx = 0;
+        let dy = 0;
+
         if (InputManager.isPressed("KeyA")) {
-            this.player.x -= speed * dt;
+            dx--;
         }
         if (InputManager.isPressed("KeyD")) {
-            this.player.x += speed * dt;
+            dx++;
+        }
+        if (InputManager.isPressed("KeyW")) {
+            dy--;
+        }
+        if (InputManager.isPressed("KeyS")) {
+            dy++;
+        }
+
+        if (dx !== 0 || dy !== 0) {
+            const length = Math.hypot(dx, dy);
+            dx /= length;
+            dy /= length;
+
+            this.player.x += dx * speed * dt;
+            this.player.y += dy * speed * dt;
+            this.player.tRot = Math.atan2(dy, dx);
+        }
+
+        let dRot = this.player.tRot - this.player.rot;
+        dRot = Math.atan2(Math.sin(dRot), Math.cos(dRot));
+        const maxStep = rotationSpeed * dt;
+
+        if (Math.abs(dRot) <= maxStep) {
+            this.player.rot = this.player.tRot;
+        } else {
+            this.player.rot += Math.sign(dRot) * maxStep;
         }
 
         this.player.ship.position.set(this.player.x, this.player.y);
+        this.player.ship.rotation = this.player.rot;
 
         this.camera();
     }
