@@ -2,7 +2,9 @@ import { Application, Container, Graphics } from "pixi.js";
 
 import { InputManager } from "./input-manager";
 
-const speed = 300;
+const acceleration = 3000;
+const maxSpeed = 300;
+const drag = 0.992;
 const rotationSpeed = 3;
 
 export class GameManager {
@@ -10,7 +12,15 @@ export class GameManager {
     private isDestroyed = false;
     readonly app = new Application();
     readonly map = new Container();
-    player = { ship: new Graphics(), x: 200, y: 200, rot: 0, tRot: 0, vx: 0, vy: 0 };
+    player = {
+        ship: new Graphics(),
+        x: 200,
+        y: 200,
+        rot: 0,
+        tRot: 0,
+        vx: 0,
+        vy: 0,
+    };
 
     async initialize(container: HTMLElement) {
         await this.app.init({
@@ -81,23 +91,35 @@ export class GameManager {
             dx /= length;
             dy /= length;
 
-            this.player.x += dx * speed * dt;
-            this.player.y += dy * speed * dt;
+            this.player.vx += dx * dt * acceleration;
+            this.player.vy += dy * dt * acceleration;
             this.player.tRot = Math.atan2(dy, dx);
         }
 
+        const currentSpeed = Math.hypot(this.player.vx, this.player.vy);
+        if (currentSpeed > maxSpeed) {
+            const scale = maxSpeed / currentSpeed;
+            this.player.vx *= scale;
+            this.player.vy *= scale;
+        }
+
+        this.player.x += this.player.vx * dt;
+        this.player.y += this.player.vy * dt;
+
         let dRot = this.player.tRot - this.player.rot;
         dRot = Math.atan2(Math.sin(dRot), Math.cos(dRot));
-        const maxStep = rotationSpeed * dt;
-
-        if (Math.abs(dRot) <= maxStep) {
+        const maxDRot = rotationSpeed * dt;
+        if (Math.abs(dRot) <= maxDRot) {
             this.player.rot = this.player.tRot;
         } else {
-            this.player.rot += Math.sign(dRot) * maxStep;
+            this.player.rot += Math.sign(dRot) * maxDRot;
         }
 
         this.player.ship.position.set(this.player.x, this.player.y);
         this.player.ship.rotation = this.player.rot;
+
+        this.player.vx *= drag;
+        this.player.vy *= drag;
 
         this.camera();
     }
