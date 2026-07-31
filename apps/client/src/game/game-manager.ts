@@ -5,7 +5,8 @@ import { InputManager } from "./input-manager";
 const speed = 300;
 
 export class GameManager {
-    private initialized = false;
+    private isInitialized = false;
+    private isDestroyed = false;
     readonly app = new Application();
     readonly map = new Container();
     player = { ship: new Graphics(), x: 200, y: 200, r: 0 };
@@ -16,6 +17,11 @@ export class GameManager {
             background: "#000814",
             antialias: true,
         });
+
+        if (this.isDestroyed) {
+            this.app.destroy({ removeView: true });
+            return;
+        }
 
         InputManager.initialize();
 
@@ -32,7 +38,7 @@ export class GameManager {
         // dummy asteroid
         this.map.addChild(new Graphics().circle(600, 300, 30).fill(0xff0000));
 
-        this.initialized = true;
+        this.isInitialized = true;
     }
 
     addShip() {
@@ -79,7 +85,8 @@ export class GameManager {
     }
 
     destroy() {
-        if (this.initialized) {
+        this.isDestroyed = true;
+        if (this.isInitialized) {
             this.app.canvas.remove();
             this.app.destroy();
         }
