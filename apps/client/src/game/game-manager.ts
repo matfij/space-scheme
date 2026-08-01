@@ -1,5 +1,8 @@
+import type { Asteroid, Player } from "@space/shared";
 import { Application, Container, Graphics } from "pixi.js";
 
+import { genId } from "../utils";
+import type { GameEntity } from "./game-definitions";
 import { InputManager } from "./input-manager";
 
 const acceleration = 3000;
@@ -12,8 +15,10 @@ export class GameManager {
     private isDestroyed = false;
     readonly app = new Application();
     readonly map = new Container();
-    player = {
-        ship: new Graphics(),
+
+    private player: GameEntity<Player> = {
+        id: genId(),
+        sprite: new Graphics(),
         x: 200,
         y: 200,
         rot: 0,
@@ -21,6 +26,7 @@ export class GameManager {
         vx: 0,
         vy: 0,
     };
+    private asteroids: GameEntity<Asteroid>[] = [];
 
     async initialize(container: HTMLElement) {
         await this.app.init({
@@ -47,13 +53,16 @@ export class GameManager {
         });
 
         // dummy asteroid
-        this.map.addChild(new Graphics().circle(600, 300, 30).fill(0xff0000));
+        this.addAsteroid(600, 400, 30);
+        this.addAsteroid(600, 500, 30);
+        this.addAsteroid(600, 600, 30);
+        this.addAsteroid(600, 700, 30);
 
         this.isInitialized = true;
     }
 
     addShip() {
-        this.player.ship = new Graphics()
+        this.player.sprite = new Graphics()
             .moveTo(20, 0)
             .lineTo(-10, -10)
             .lineTo(-5, 0)
@@ -64,9 +73,9 @@ export class GameManager {
                 width: 2,
             });
 
-        this.player.ship.position.set(this.player.x, this.player.y);
+        this.player.sprite.position.set(this.player.x, this.player.y);
 
-        this.map.addChild(this.player.ship);
+        this.map.addChild(this.player.sprite);
     }
 
     update(dt: number) {
@@ -115,12 +124,13 @@ export class GameManager {
             this.player.rot += Math.sign(dRot) * maxDRot;
         }
 
-        this.player.ship.position.set(this.player.x, this.player.y);
-        this.player.ship.rotation = this.player.rot;
+        this.player.sprite.position.set(this.player.x, this.player.y);
+        this.player.sprite.rotation = this.player.rot;
 
         this.player.vx *= drag;
         this.player.vy *= drag;
 
+        this.checkCollisions();
         this.camera();
     }
 
@@ -129,6 +139,31 @@ export class GameManager {
             this.app.screen.width / 2 - this.player.x,
             this.app.screen.height / 2 - this.player.y,
         );
+    }
+
+    checkCollisions() {
+        for (const asteroid of this.asteroids) {
+            const dx = this.player.x - asteroid.x;
+            const dy = this.player.y - asteroid.y;
+            const dxy = Math.hypot(dx, dy);
+            if (dxy < asteroid.r) {
+                this.onCollision(asteroid);
+            }
+        }
+    }
+
+    onCollision(asteroid: GameEntity<Asteroid>) {
+        this.map.removeChild(asteroid.sprite);
+        this.asteroids = this.asteroids.filter((a) => a.id !== asteroid.id);
+        this.player.vx *= -0.5;
+        this.player.vy *= -0.5;
+    }
+
+    addAsteroid(x: number, y: number, r: number) {
+        const sprite = new Graphics().circle(0, 0, r).fill(0xff0000);
+        sprite.position.set(x, y);
+        this.map.addChild(sprite);
+        this.asteroids.push({ id: genId(), sprite, x, y, r });
     }
 
     destroy() {
