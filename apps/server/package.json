@@ -1,0 +1,19 @@
+{
+    "name": "@space/server",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "tsx watch src/index.ts",
+        "build": "tsc -b",
+        "lint": "oxlint ."
+    },
+    "dependencies": {
+        "@space/shared": "workspace:*",
+        "fastify": "^5.11.0"
+    },
+    "devDependencies": {
+        "@types/node": "^24.13.3",
+        "tsx": "^4.23.1"
+    }
+}
