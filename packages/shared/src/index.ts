@@ -7,3 +7,4 @@ export const gameConfig = {
 
 export * from "./entities";
 export * from "./dtos";
+export * from "./resources/index";

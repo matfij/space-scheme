@@ -1,9 +1,9 @@
-export type EntityKind = "Player" | "Asteroid" | "Projectile";
+export type EntityKind = "Ship" | "Alien" | "Asteroid" | "Projectile";
 
 export type BaseEntity<T extends EntityKind> = {
     type: T;
     id: string;
-    mass: number;
+    resourceId: string;
     radius: number;
     x: number;
     y: number;
@@ -11,14 +11,18 @@ export type BaseEntity<T extends EntityKind> = {
     vy: number;
 };
 
-export type PlayerEntity = BaseEntity<"Player"> & {
+export type ShipEntity = BaseEntity<"Ship"> & {
     rot: number;
     tRot: number;
     inputs: string[];
 };
 
-export type ProjectileEntity = BaseEntity<"Projectile">;
+export type AlienEntity = BaseEntity<"Alien">;
+
+export type ProjectileEntity = BaseEntity<"Projectile"> & {
+    shooterId: string;
+};
 
 export type AsteroidEntity = BaseEntity<"Asteroid">;
 
-export type GameEntity = PlayerEntity | AsteroidEntity | ProjectileEntity;
+export type GameEntity = ShipEntity | AsteroidEntity | ProjectileEntity;
