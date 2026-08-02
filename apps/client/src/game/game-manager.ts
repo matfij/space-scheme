@@ -1,4 +1,10 @@
-import type { AsteroidEntity, EntityKind, GameEntity, PlayerEntity } from "@space/shared";
+import type {
+    AsteroidEntity,
+    EntityKind,
+    GameEntity,
+    PlayerEntity,
+    ProjectileEntity,
+} from "@space/shared";
 import { Application, Container, Graphics } from "pixi.js";
 
 import { genId, randRange } from "../utils";
@@ -34,6 +40,7 @@ export class GameManager {
         vy: 0,
     };
     private asteroids: VisualEntity<AsteroidEntity>[] = [];
+    private projectiles: VisualEntity<ProjectileEntity>[] = [];
 
     async initialize(container: HTMLElement) {
         await this.app.init({
@@ -90,6 +97,8 @@ export class GameManager {
 
     update(dt: number) {
         this.movePlayer(dt);
+        this.onShoot();
+        this.moveProjectiles(dt);
         this.moveAsteroids(dt);
         this.checkCollisions();
         this.camera();
@@ -153,6 +162,39 @@ export class GameManager {
 
         this.player.vx *= drag;
         this.player.vy *= drag;
+    }
+
+    onShoot() {
+        if (InputManager.isPressed("KeyO")) {
+            this.addProjectile(this.player.x, this.player.y, 800, this.player.rot);
+        }
+    }
+
+    addProjectile(x: number, y: number, v: number, rot: number) {
+        const sprite = new Graphics().circle(0, 0, 2).fill("#f00");
+        sprite.position.set(x, y);
+        sprite.rotation = rot;
+        this.map.addChild(sprite);
+
+        this.projectiles.push({
+            id: genId(),
+            mass: 1,
+            radius: 2,
+            sprite,
+            type: "Projectile",
+            x,
+            y,
+            vx: Math.cos(rot) * v,
+            vy: Math.sin(rot) * v,
+        });
+    }
+
+    moveProjectiles(dt: number) {
+        for (const projectile of this.projectiles) {
+            projectile.x += dt * projectile.vx;
+            projectile.y += dt * projectile.vy;
+            projectile.sprite.position.set(projectile.x, projectile.y);
+        }
     }
 
     moveAsteroids(dt: number) {
