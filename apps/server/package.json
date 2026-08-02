@@ -9,11 +9,13 @@
         "lint": "oxlint ."
     },
     "dependencies": {
+        "@fastify/websocket": "^11.3.0",
         "@space/shared": "workspace:*",
         "fastify": "^5.11.0"
     },
     "devDependencies": {
         "@types/node": "^24.13.3",
+        "@types/ws": "^8.18.1",
         "tsx": "^4.23.1"
     }
 }

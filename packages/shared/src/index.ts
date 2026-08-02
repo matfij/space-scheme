@@ -5,4 +5,5 @@ export const gameConfig = {
     height: 720,
 } as const;
 
-export * from "./definitions";
+export * from "./entities";
+export * from "./dtos";

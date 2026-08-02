@@ -14,6 +14,7 @@ export type BaseEntity<T extends EntityKind> = {
 export type PlayerEntity = BaseEntity<"Player"> & {
     rot: number;
     tRot: number;
+    inputs: string[];
 };
 
 export type ProjectileEntity = BaseEntity<"Projectile">;

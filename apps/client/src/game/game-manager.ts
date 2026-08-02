@@ -2,6 +2,7 @@ import type {
     AsteroidEntity,
     EntityKind,
     GameEntity,
+    GameState,
     PlayerEntity,
     ProjectileEntity,
 } from "@space/shared";
@@ -274,6 +275,77 @@ export class GameManager {
         const index = this.asteroids.findIndex((a) => a.id === id);
         const entity = this.asteroids.splice(index, 1)[0];
         this.map.removeChild(entity.sprite);
+    }
+
+    destroy() {
+        this.isDestroyed = true;
+        if (this.isInitialized) {
+            this.app.canvas.remove();
+            this.app.destroy();
+        }
+    }
+}
+
+export class GameMangerWs {
+    private isInitialized = false;
+    private isDestroyed = false;
+
+    private ws?: WebSocket;
+    private keys = new Set<string>();
+
+    readonly app = new Application();
+    readonly map = new Container();
+
+    async initialize(container: HTMLElement, url: string) {
+        await this.setupCanvas(container);
+        if (this.isDestroyed) {
+            this.app.destroy({ removeView: true });
+            return;
+        }
+        this.connectWs(url);
+        this.setupInput();
+        this.isInitialized = true;
+    }
+
+    private async setupCanvas(container: HTMLElement) {
+        await this.app.init({
+            resizeTo: container,
+            background: "#000814",
+            antialias: true,
+        });
+    }
+
+    private connectWs(url: string) {
+        this.ws = new WebSocket(url);
+        this.ws.onmessage = (message: MessageEvent<GameState>) => {
+            this.render(message.data);
+        };
+    }
+
+    private setupInput() {
+        window.addEventListener("keydown", (event) => {
+            this.keys.add(event.code);
+        });
+
+        window.addEventListener("keyup", (event) => {
+            this.keys.delete(event.code);
+        });
+
+        setInterval(() => {
+            if (this.keys.size > 0) {
+                this.sendInput();
+            }
+        }, 1000 / 30);
+    }
+
+    private sendInput() {
+        if (this.ws?.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({ inputs: Array.from(this.keys) }));
+        }
+    }
+
+    private render(state: GameState) {
+        console.log({ state });
     }
 
     destroy() {
