@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { GameMangerWs } from "./game-manager";
+import { GameManger } from "./game-manager";
 
 export const GameComponent = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -10,7 +10,7 @@ export const GameComponent = () => {
         if (!containerRef.current) {
             return;
         }
-        const game = new GameMangerWs();
+        const game = new GameManger();
         (async () => {
             await game.initialize(containerRef.current as HTMLDivElement, "ws://localhost:3000/ws");
             if (disposed) {

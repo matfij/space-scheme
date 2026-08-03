@@ -1,9 +1,8 @@
 import websocket from "@fastify/websocket";
-import { GameMessage, JoinMessage, ShipEntity } from "@space/shared";
+import { GameMessage, JoinMessage, safeParse } from "@space/shared";
 import fastify from "fastify";
 
 import { GameManager } from "./engine/game-manager";
-import { genId } from "./utils";
 
 const app = fastify({ logger: true });
 app.register(websocket);
@@ -25,18 +24,15 @@ setInterval(() => {
 app.register(async (appInstance) => {
     appInstance.get("/ws", { websocket: true }, (socket, request) => {
         const { playerId, shipId, name } = request.query as JoinMessage;
-        players.set(playerId, socket);
 
-        console.log("[JOINED]", { playerId, shipId, name });
+        if (!players.has(playerId)) {
+            players.set(playerId, socket);
+            gameManager.addShip(playerId, shipId);
+            gameManager.initialize();
+        }
 
-        gameManager.addShip(playerId, shipId);
-        gameManager.initialize();
-
-        socket.on("message", (raw: string) => {
-            const message = JSON.parse(raw.toString()) as GameMessage;
-
-            console.log("[INPUT]", message);
-
+        socket.on("message", (raw) => {
+            const message = safeParse<GameMessage>(raw);
             gameManager.setInputs(message.playerId, message.inputs);
         });
 

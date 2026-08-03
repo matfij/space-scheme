@@ -7,6 +7,7 @@ import {
     EntityKind,
     GAME_ASTEROIDS,
     GameState,
+    safeSerialize,
 } from "@space/shared";
 
 import { genId, randRange } from "../utils";
@@ -232,6 +233,6 @@ export class GameManager {
             })),
         };
 
-        return JSON.stringify(state);
+        return safeSerialize(state);
     }
 }
