@@ -35,6 +35,8 @@ export class GameRenderer {
 
         this.map.removeChildren();
 
+        console.log(state.ships.length);
+
         for (const ship of state.ships) {
             const resource = GAME_SHIPS[ship.resourceId];
 

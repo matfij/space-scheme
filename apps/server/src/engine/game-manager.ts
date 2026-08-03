@@ -20,6 +20,12 @@ export class GameManager {
     private asteroids: AsteroidEntity[] = [];
     private projectiles: ProjectileEntity[] = [];
 
+    hasShip = (id: string) => !!this.ships.find((ship) => ship.id === id);
+
+    removeShip(id: string) {
+        this.ships = this.ships.filter((ship) => ship.id !== id);
+    }
+
     async initialize() {
         this.addAsteroid(200, 400);
         this.addAsteroid(300, 400);

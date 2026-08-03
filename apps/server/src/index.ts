@@ -25,8 +25,13 @@ app.register(async (appInstance) => {
     appInstance.get("/ws", { websocket: true }, (socket, request) => {
         const { playerId, shipId, name } = request.query as JoinMessage;
 
-        if (!players.has(playerId)) {
-            players.set(playerId, socket);
+        const existing = players.get(playerId);
+        if (existing && existing !== socket) {
+            existing.close();
+        }
+
+        players.set(playerId, socket);
+        if (!gameManager.hasShip(playerId)) {
             gameManager.addShip(playerId, shipId);
             gameManager.initialize();
         }
@@ -37,7 +42,9 @@ app.register(async (appInstance) => {
         });
 
         socket.on("close", () => {
-            players.delete(playerId);
+            if (players.get(playerId) === socket) {
+                players.delete(playerId);
+            }
         });
     });
 });
