@@ -4,13 +4,13 @@ import {
     ProjectileEntity,
     GameEntity,
     EntityKind,
-    GAME_ASTEROIDS,
     GameState,
     safeSerialize,
 } from "@space/shared";
 
-import { genId, randRange } from "../utils";
-import { SpatialGrid } from "./collision-manager";
+import { genId } from "../utils";
+import { AsteroidManager } from "./asteroid-manager";
+import { SpatialGrid } from "./spatial-grid";
 import { ShipManager } from "./ship-manager";
 
 export class GameManager {
@@ -87,8 +87,7 @@ export class GameManager {
 
     moveAsteroids(dt: number) {
         for (const asteroid of this.asteroids) {
-            asteroid.x += dt * asteroid.vx;
-            asteroid.y += dt * asteroid.vy;
+            AsteroidManager.moveAsteroid(dt, asteroid);
         }
     }
 
@@ -138,17 +137,8 @@ export class GameManager {
     }
 
     addAsteroid(x: number, y: number) {
-        const resource = GAME_ASTEROIDS["asteroid-small-ball"];
-        this.asteroids.push({
-            id: genId(),
-            type: "Asteroid",
-            resourceId: "asteroid-small-ball",
-            radius: resource.radius,
-            x,
-            y,
-            vx: randRange(-resource.maxSpeed, resource.maxSpeed),
-            vy: randRange(-resource.maxSpeed, resource.maxSpeed),
-        });
+        const newAsteroid = AsteroidManager.createAsteroid(x, y);
+        this.asteroids.push(newAsteroid);
     }
 
     serialize() {
