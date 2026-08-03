@@ -44,6 +44,7 @@ app.register(async (appInstance) => {
         socket.on("close", () => {
             if (players.get(playerId) === socket) {
                 players.delete(playerId);
+                // TODO - ship inactive state
             }
         });
     });
