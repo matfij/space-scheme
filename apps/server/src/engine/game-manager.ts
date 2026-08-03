@@ -2,20 +2,16 @@ import {
     AsteroidEntity,
     ShipEntity,
     ProjectileEntity,
-    GameEntity,
-    EntityKind,
     GameState,
     safeSerialize,
 } from "@space/shared";
 
 import { genId } from "../utils";
 import { AsteroidManager } from "./asteroid-manager";
-import { SpatialGrid } from "./spatial-grid";
+import { CollisionManager } from "./collision-manager";
 import { ShipManager } from "./ship-manager";
 
 export class GameManager {
-    private grid = new SpatialGrid();
-
     private ships: ShipEntity[] = [];
     private asteroids: AsteroidEntity[] = [];
     private projectiles: ProjectileEntity[] = [];
@@ -55,7 +51,7 @@ export class GameManager {
         this.moveShips(dt);
         this.moveProjectiles(dt);
         this.moveAsteroids(dt);
-        this.checkCollisions();
+        CollisionManager.checkCollisions([...this.ships, ...this.asteroids]);
     }
 
     moveShips(dt: number) {
@@ -88,51 +84,6 @@ export class GameManager {
     moveAsteroids(dt: number) {
         for (const asteroid of this.asteroids) {
             AsteroidManager.moveAsteroid(dt, asteroid);
-        }
-    }
-
-    checkCollisions() {
-        const entities = [...this.ships, ...this.asteroids];
-        this.grid.clear();
-        entities.forEach((entity) => this.grid.insert(entity));
-        const checked = new Set<string>();
-
-        for (const a of entities) {
-            for (const b of this.grid.nearby(a)) {
-                if (a.id === b.id) {
-                    continue;
-                }
-                const pairKey = a.id < b.id ? `${a.id}|${b.id}` : `${b.id}|${a.id}`;
-                if (checked.has(pairKey)) {
-                    continue;
-                }
-                checked.add(pairKey);
-                const dxy = Math.hypot(a.x - b.x, a.y - b.y);
-                if (dxy < a.radius + b.radius) {
-                    this.resolveCollision(a, b);
-                }
-            }
-        }
-    }
-
-    resolveCollision(a: GameEntity, b: GameEntity) {
-        const key = [a.type, b.type].sort().join("-") as `${EntityKind}-${EntityKind}`;
-        switch (key) {
-            case "Asteroid-Ship": {
-                const ship = a.type === "Ship" ? a : b;
-                const asteroid = a.type === "Asteroid" ? a : b;
-                ship.vx *= -1;
-                ship.vy *= -1;
-                // TODO - remove asteroid
-                break;
-            }
-            case "Asteroid-Asteroid": {
-                a.vx *= -1;
-                a.vy *= -1;
-                b.vx *= -1;
-                b.vy *= -1;
-                break;
-            }
         }
     }
 
