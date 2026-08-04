@@ -1,6 +1,6 @@
-import { GameResource } from "./types";
+import { AsteroidResource } from "./types";
 
-export const SMALL_BALL: GameResource = {
+export const SMALL_BALL: AsteroidResource = {
     id: "asteroid-small-ball",
     type: "Asteroid",
     radius: 25,
@@ -14,8 +14,8 @@ export const SMALL_BALL: GameResource = {
     },
 };
 
-export const GAME_ASTEROIDS = {
+export const GAME_ASTEROIDS: Record<string, AsteroidResource> = {
     [SMALL_BALL.id]: SMALL_BALL,
-} as const satisfies Record<string, GameResource>;
+} as const;
 
 export type AsteroidId = keyof typeof GAME_ASTEROIDS;

@@ -1,6 +1,6 @@
-import { GameResource } from "./types";
+import type { ShipResource } from "./types";
 
-export const LEON: GameResource = {
+export const LEON: ShipResource = {
     id: "ship-leon",
     type: "Ship",
     radius: 10,
@@ -8,8 +8,8 @@ export const LEON: GameResource = {
     drag: 0.992,
     maxSpeed: 300,
     acceleration: 1000,
-    projectTileSpeed: 800,
     projectTileCooldown: 60,
+    projectileId: "projectile-swift-laser",
     rotationSpeed: 3,
     sprite: {
         type: "Polygon",
@@ -24,7 +24,7 @@ export const LEON: GameResource = {
     },
 };
 
-export const GAME_SHIPS = {
+export const GAME_SHIPS: Record<string, ShipResource> = {
     [LEON.id]: LEON,
 } as const;
 

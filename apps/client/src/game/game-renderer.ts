@@ -1,7 +1,11 @@
-import { GAME_ASTEROIDS, GAME_SHIPS, type GameState } from "@space/shared";
+import {
+    GAME_ASTEROIDS,
+    GAME_PROJECTILES,
+    GAME_SHIPS,
+    type GameResource,
+    type GameState,
+} from "@space/shared";
 import { Application, Container, Graphics } from "pixi.js";
-
-import type { GameResource } from "../../../../packages/shared/src/resources/types";
 
 export class GameRenderer {
     private isInitialized = false;
@@ -35,8 +39,6 @@ export class GameRenderer {
 
         this.map.removeChildren();
 
-        console.log(state.ships.length);
-
         for (const ship of state.ships) {
             const resource = GAME_SHIPS[ship.resourceId];
 
@@ -61,6 +63,16 @@ export class GameRenderer {
             asteroidGraphic.position.set(asteroid.x, asteroid.y);
 
             this.map.addChild(asteroidGraphic);
+        }
+
+        for (const projectile of state.projectiles) {
+            console.log("projectile.resourceId", projectile.resourceId);
+            const resource = GAME_PROJECTILES[projectile.resourceId];
+
+            const projectileGraphic = this.renderSprite(resource.sprite);
+            projectileGraphic.position.set(projectile.x, projectile.y);
+
+            this.map.addChild(projectileGraphic);
         }
     }
 
