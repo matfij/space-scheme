@@ -2,7 +2,7 @@ import type { GameEntity } from "@space/shared";
 
 export class SpatialGrid {
     private cellSize: number;
-    private cells = new Map<string, GameEntity[]>();
+    private cells = new Map<number, GameEntity[]>();
 
     constructor(cellSize = 100) {
         this.cellSize = cellSize;
@@ -20,19 +20,17 @@ export class SpatialGrid {
         }
     }
 
-    nearby(entity: GameEntity) {
+    *nearby(entity: GameEntity) {
         const cx = this.toCell(entity.x);
         const cy = this.toCell(entity.y);
-        const neighbors: GameEntity[] = [];
         for (let dx = -1; dx <= 1; dx++) {
             for (let dy = -1; dy <= 1; dy++) {
                 const bucket = this.cells.get(this.toKey(cx + dx, cy + dy));
                 if (bucket) {
-                    neighbors.push(...bucket);
+                    yield* bucket;
                 }
             }
         }
-        return neighbors;
     }
 
     clear() {
@@ -44,6 +42,6 @@ export class SpatialGrid {
     }
 
     private toKey(cx: number, cy: number) {
-        return `${cx},${cy}`;
+        return cx * 100000 + cy;
     }
 }

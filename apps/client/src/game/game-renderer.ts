@@ -8,6 +8,14 @@ import {
 } from "@space/shared";
 import { Application, Container, Graphics, Text } from "pixi.js";
 
+const colors = {
+    fontLight: "#fafafa",
+    healthBarLow: "#333333",
+    healthBarHigh: "#e63946",
+    shieldBarLow: "#333333",
+    shieldBarHigh: "#469cd2",
+};
+
 export class GameRenderer {
     private isInitialized = false;
     private isDestroyed = false;
@@ -99,31 +107,31 @@ export class GameRenderer {
         const hud = new Container();
         hud.position.set(ship.x, ship.y - resource.radius + 50);
 
-        const barWidth = 40;
+        const barWidth = 50;
         const barHeight = 4;
 
         hud.addChild(
             new Graphics()
                 .rect(-barWidth / 2, 0, barWidth, barHeight)
-                .fill("#333333")
+                .fill(colors.healthBarLow)
                 .rect(-barWidth / 2, 0, barWidth * (ship.hp / resource.health), barHeight)
-                .fill("#e63946"),
+                .fill(colors.healthBarHigh),
         );
 
         hud.addChild(
             new Graphics()
                 .rect(-barWidth / 2, barHeight + 2, barWidth, barHeight)
-                .fill("#333333")
+                .fill(colors.shieldBarLow)
                 .rect(
                     -barWidth / 2,
                     barHeight + 2,
                     barWidth * (ship.sp / resource.shield),
                     barHeight,
                 )
-                .fill("#457b9d"),
+                .fill(colors.shieldBarHigh),
         );
 
-        const name = new Text({ text: ship.name, style: { fill: "#fff", fontSize: 12 } });
+        const name = new Text({ text: ship.name, style: { fill: colors.fontLight, fontSize: 12 } });
         name.anchor.set(0.5, 1);
         name.position.set(0, -4);
         hud.addChild(name);

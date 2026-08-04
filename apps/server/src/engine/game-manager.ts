@@ -4,6 +4,7 @@ import {
     ProjectileEntity,
     GameState,
     safeSerialize,
+    GameEntity,
 } from "@space/shared";
 
 import { AsteroidManager } from "./asteroid-manager";
@@ -12,6 +13,7 @@ import { ProjectilesManger } from "./projectiles-manager";
 import { ShipManager } from "./ship-manager";
 
 export class GameManager {
+    private entities: GameEntity[] = [];
     private ships: ShipEntity[] = [];
     private asteroids: AsteroidEntity[] = [];
     private projectiles: ProjectileEntity[] = [];
@@ -56,8 +58,19 @@ export class GameManager {
         this.moveShips(dt);
         ProjectilesManger.moveProjectiles(dt, this.projectiles);
         this.moveAsteroids(dt);
+
+        this.entities.length = 0;
+        for (const ship of this.ships) {
+            this.entities.push(ship);
+        }
+        for (const asteroid of this.asteroids) {
+            this.entities.push(asteroid);
+        }
+        for (const projectile of this.projectiles) {
+            this.entities.push(projectile);
+        }
         // TODO - optimize: https://claude.ai/chat/31ca59db-b4df-429b-ba04-72e9ee9ab929
-        CollisionManager.checkCollisions([...this.ships, ...this.asteroids, ...this.projectiles]);
+        CollisionManager.checkCollisions(this.entities);
     }
 
     moveShips(dt: number) {

@@ -5,19 +5,17 @@ import { SpatialGrid } from "./spatial-grid";
 export class CollisionManager {
     static checkCollisions(entities: GameEntity[]) {
         const grid = new SpatialGrid();
-        entities.forEach((entity) => grid.insert(entity));
-        const checked = new Set<string>();
 
-        for (const a of entities) {
+        for (const entity of entities) {
+            grid.insert(entity);
+        }
+
+        for (let i = 0; i < entities.length; i++) {
+            const a = entities[i];
             for (const b of grid.nearby(a)) {
-                if (a.id === b.id) {
+                if (a.id >= b.id) {
                     continue;
                 }
-                const pairKey = a.id < b.id ? `${a.id}|${b.id}` : `${b.id}|${a.id}`;
-                if (checked.has(pairKey)) {
-                    continue;
-                }
-                checked.add(pairKey);
                 const dxy = Math.hypot(a.x - b.x, a.y - b.y);
                 if (dxy < a.radius + b.radius) {
                     this.resolveCollision(a, b);
