@@ -4,8 +4,9 @@ import {
     GAME_SHIPS,
     type GameResource,
     type GameState,
+    type ShipResource,
 } from "@space/shared";
-import { Application, Container, Graphics } from "pixi.js";
+import { Application, Container, Graphics, Text } from "pixi.js";
 
 export class GameRenderer {
     private isInitialized = false;
@@ -46,6 +47,8 @@ export class GameRenderer {
             shipGraphic.position.set(ship.x, ship.y);
             shipGraphic.rotation = ship.rot;
 
+            this.map.addChild(this.renderShipHud(ship, resource));
+
             this.map.addChild(shipGraphic);
 
             if (ship.id === "new-player") {
@@ -66,7 +69,6 @@ export class GameRenderer {
         }
 
         for (const projectile of state.projectiles) {
-            console.log("projectile.resourceId", projectile.resourceId);
             const resource = GAME_PROJECTILES[projectile.resourceId];
 
             const projectileGraphic = this.renderSprite(resource.sprite);
@@ -91,6 +93,42 @@ export class GameRenderer {
                 graphic.closePath().stroke({ color: sprite.color, width: sprite.width });
                 return graphic;
         }
+    }
+
+    private renderShipHud(ship: GameState["ships"][number], resource: ShipResource) {
+        const hud = new Container();
+        hud.position.set(ship.x, ship.y - resource.radius + 50);
+
+        const barWidth = 40;
+        const barHeight = 4;
+
+        hud.addChild(
+            new Graphics()
+                .rect(-barWidth / 2, 0, barWidth, barHeight)
+                .fill("#333333")
+                .rect(-barWidth / 2, 0, barWidth * (ship.hp / resource.health), barHeight)
+                .fill("#e63946"),
+        );
+
+        hud.addChild(
+            new Graphics()
+                .rect(-barWidth / 2, barHeight + 2, barWidth, barHeight)
+                .fill("#333333")
+                .rect(
+                    -barWidth / 2,
+                    barHeight + 2,
+                    barWidth * (ship.sp / resource.shield),
+                    barHeight,
+                )
+                .fill("#457b9d"),
+        );
+
+        const name = new Text({ text: ship.name, style: { fill: "#fff", fontSize: 12 } });
+        name.anchor.set(0.5, 1);
+        name.position.set(0, -4);
+        hud.addChild(name);
+
+        return hud;
     }
 
     destroy() {

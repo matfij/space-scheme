@@ -12,6 +12,9 @@ export type GameResource = {
 } & (
     | {
           type: "Ship";
+          health: number;
+          shield: number;
+          shieldRegeneration: number;
           drag: number;
           maxSpeed: number;
           acceleration: number;
@@ -21,6 +24,9 @@ export type GameResource = {
       }
     | {
           type: "Alien";
+          health: number;
+          shield: number;
+          shieldRegeneration: number;
           drag: number;
           maxSpeed: number;
           acceleration: number;
@@ -30,12 +36,14 @@ export type GameResource = {
       }
     | {
           type: "Asteroid";
+          health: number;
           maxSpeed: number;
       }
     | {
           type: "Projectile";
           speed: number;
           range: number;
+          damage: number;
       }
 );
 

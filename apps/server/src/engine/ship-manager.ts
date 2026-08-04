@@ -1,21 +1,17 @@
-import {
-    GAME_PROJECTILES,
-    GAME_SHIPS,
-    ProjectileEntity,
-    ProjectileId,
-    ShipEntity,
-} from "@space/shared";
+import { GAME_SHIPS, ProjectileEntity, ProjectileId, ShipEntity } from "@space/shared";
 
-import { genId } from "../utils";
 import { ProjectilesManger } from "./projectiles-manager";
 
 export class ShipManager {
-    static createShip(id: string, shipId: string): ShipEntity {
+    static createShip(id: string, name: string, shipId: string): ShipEntity {
         const resource = GAME_SHIPS[shipId];
         return {
             id,
             type: "Ship",
             resourceId: shipId,
+            name: name,
+            hp: resource.health,
+            sp: resource.shield,
             radius: resource.radius,
             x: 0,
             y: 0,

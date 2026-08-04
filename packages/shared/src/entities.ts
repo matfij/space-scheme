@@ -12,12 +12,19 @@ export type BaseEntity<T extends EntityKind> = {
 };
 
 export type ShipEntity = BaseEntity<"Ship"> & {
+    name: string;
+    hp: number;
+    sp: number;
     rot: number;
     tRot: number;
     inputs: string[];
 };
 
-export type AlienEntity = BaseEntity<"Alien">;
+export type AlienEntity = BaseEntity<"Alien"> & {
+    hp: number;
+    sp: number;
+    rot: number;
+};
 
 export type ProjectileEntity = BaseEntity<"Projectile"> & {
     shooterId: string;
@@ -25,6 +32,8 @@ export type ProjectileEntity = BaseEntity<"Projectile"> & {
     travelLimit: number;
 };
 
-export type AsteroidEntity = BaseEntity<"Asteroid">;
+export type AsteroidEntity = BaseEntity<"Asteroid"> & {
+    hp: number;
+};
 
 export type GameEntity = ShipEntity | AsteroidEntity | ProjectileEntity;

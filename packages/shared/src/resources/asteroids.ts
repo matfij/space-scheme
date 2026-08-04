@@ -3,6 +3,7 @@ import { AsteroidResource } from "./types";
 export const SMALL_BALL: AsteroidResource = {
     id: "asteroid-small-ball",
     type: "Asteroid",
+    health: 1000,
     radius: 25,
     mass: 250,
     maxSpeed: 90,

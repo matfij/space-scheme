@@ -32,7 +32,7 @@ app.register(async (appInstance) => {
 
         players.set(playerId, socket);
         if (!gameManager.hasShip(playerId)) {
-            gameManager.addShip(playerId, shipId);
+            gameManager.addShip(playerId, name, shipId);
             gameManager.initialize();
         }
 

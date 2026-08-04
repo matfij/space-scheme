@@ -36,8 +36,8 @@ export class GameManager {
         });
     }
 
-    addShip(id: string, shipId: string) {
-        const newShip = ShipManager.createShip(id, shipId);
+    addShip(id: string, name: string, shipId: string) {
+        const newShip = ShipManager.createShip(id, name, shipId);
         this.ships.push(newShip);
     }
 
@@ -77,12 +77,16 @@ export class GameManager {
             ships: this.ships.map((ship) => ({
                 id: ship.id,
                 resourceId: ship.resourceId,
+                name: ship.name,
+                hp: ship.hp,
+                sp: ship.sp,
                 x: ship.x,
                 y: ship.y,
                 rot: ship.rot,
             })),
             asteroids: this.asteroids.map((asteroid) => ({
                 resourceId: asteroid.resourceId,
+                hp: asteroid.hp,
                 x: asteroid.x,
                 y: asteroid.y,
             })),

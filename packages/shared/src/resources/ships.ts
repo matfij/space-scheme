@@ -3,6 +3,9 @@ import type { ShipResource } from "./types";
 export const LEON: ShipResource = {
     id: "ship-leon",
     type: "Ship",
+    health: 500,
+    shield: 100,
+    shieldRegeneration: 10,
     radius: 10,
     mass: 20,
     drag: 0.992,

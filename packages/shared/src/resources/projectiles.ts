@@ -7,6 +7,7 @@ export const SWIFT_LASER: ProjectileResource = {
     mass: 1,
     speed: 900,
     range: 900,
+    damage: 10,
     sprite: {
         type: "Circle",
         color: "#f00",

@@ -9,6 +9,7 @@ export class AsteroidManager {
             id: genId(),
             type: "Asteroid",
             resourceId: "asteroid-small-ball",
+            hp: resource.health,
             radius: resource.radius,
             x,
             y,
