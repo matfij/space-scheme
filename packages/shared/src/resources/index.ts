@@ -6,6 +6,7 @@ export * from "./types";
 export * from "./ships";
 export * from "./asteroids";
 export * from "./projectiles";
+export * from "./maps";
 
 export const GAME_RESOURCES = {
     ...GAME_SHIPS,

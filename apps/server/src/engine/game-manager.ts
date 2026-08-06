@@ -69,7 +69,6 @@ export class GameManager {
         for (const projectile of this.projectiles) {
             this.entities.push(projectile);
         }
-        // TODO - optimize: https://claude.ai/chat/31ca59db-b4df-429b-ba04-72e9ee9ab929
         CollisionManager.checkCollisions(this.entities);
     }
 

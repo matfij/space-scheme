@@ -1,5 +1,13 @@
 import type { EntityKind } from "../entities";
 
+export type GameMap = {
+    id: string;
+    name: string;
+    gridSize: number;
+    width: number;
+    height: number;
+};
+
 export type GameResource = {
     id: string;
     type: EntityKind;
