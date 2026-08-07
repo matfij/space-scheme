@@ -97,12 +97,14 @@ export class GameManager {
                 rot: ship.rot,
             })),
             asteroids: this.asteroids.map((asteroid) => ({
+                id: asteroid.id,
                 resourceId: asteroid.resourceId,
                 hp: asteroid.hp,
                 x: asteroid.x,
                 y: asteroid.y,
             })),
             projectiles: this.projectiles.map((projectile) => ({
+                id: projectile.id,
                 resourceId: projectile.resourceId,
                 x: projectile.x,
                 y: projectile.y,

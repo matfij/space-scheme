@@ -1,4 +1,4 @@
-import { AsteroidResource } from "./types";
+import type { AsteroidResource } from "./types";
 
 export const SMALL_BALL: AsteroidResource = {
     id: "asteroid-small-ball",

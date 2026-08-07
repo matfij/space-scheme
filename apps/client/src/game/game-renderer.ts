@@ -1,7 +1,5 @@
 import {
-    GAME_ASTEROIDS,
-    GAME_PROJECTILES,
-    GAME_SHIPS,
+    GAME_RESOURCES,
     MILKY_WAY,
     type GameMap,
     type GameResource,
@@ -25,9 +23,15 @@ export class GameRenderer {
     private isInitialized = false;
     private isDestroyed = false;
 
-    private readonly app = new Application();
-    private readonly map = new Container();
-    private readonly grid = new Graphics();
+    private app = new Application();
+    private mapLayer = new Container();
+
+    private grid = new Graphics();
+
+    private huds = new Map<string, Container>();
+    private shipGraphics = new Map<string, Container>();
+    private asteroidGraphics = new Map<string, Container>();
+    private projectileGraphics = new Map<string, Container>();
 
     private cameraX = 0;
     private cameraY = 0;
@@ -39,10 +43,10 @@ export class GameRenderer {
         });
 
         container.appendChild(this.app.canvas);
-        this.app.stage.addChild(this.map);
+        this.app.stage.addChild(this.mapLayer);
 
-        this.map.addChild(this.grid);
         this.renderGrid(MILKY_WAY);
+        this.mapLayer.addChild(this.grid);
 
         this.app.resizeTo = container;
         this.app.resize();
@@ -60,50 +64,91 @@ export class GameRenderer {
             return;
         }
 
-        this.map.removeChildren();
-        this.map.addChild(this.grid);
+        const playerShip = state.ships.find((ship) => ship.id === "new-player");
+        if (playerShip) {
+            const targetX = this.app.screen.width / 2 - playerShip.x;
+            const targetY = this.app.screen.height / 2 - playerShip.y;
+            this.cameraX += (targetX - this.cameraX) * this.CAMERA_SMOOTHING;
+            this.cameraY += (targetY - this.cameraY) * this.CAMERA_SMOOTHING;
+        }
+        this.mapLayer.position.set(this.cameraX, this.cameraY);
 
-        for (const ship of state.ships) {
-            const resource = GAME_SHIPS[ship.resourceId];
+        this.grid.position.set(
+            Math.round(this.cameraX) - this.cameraX,
+            Math.round(this.cameraY) - this.cameraY,
+        );
 
-            const shipGraphic = this.renderSprite(resource.sprite);
-            shipGraphic.position.set(ship.x, ship.y);
-            shipGraphic.rotation = ship.rot;
+        this.syncEntities(state.ships, this.shipGraphics, (ship) => this.renderEntity(ship));
 
-            this.map.addChild(this.renderHud(ship, resource));
+        this.syncEntities(state.asteroids, this.asteroidGraphics, (asteroid) =>
+            this.renderEntity(asteroid),
+        );
 
-            this.map.addChild(shipGraphic);
+        this.syncEntities(state.projectiles, this.projectileGraphics, (projectile) =>
+            this.renderEntity(projectile, true),
+        );
+    }
 
-            if (ship.id === "new-player") {
-                const targetX = this.app.screen.width / 2 - ship.x;
-                const targetY = this.app.screen.height / 2 - ship.y;
+    private syncEntities(
+        entities: GameState["ships" | "asteroids" | "projectiles"],
+        map: Map<string, Container>,
+        factory: (entity: GameState["ships" | "asteroids" | "projectiles"][number]) => Container,
+    ) {
+        const seen = new Set<string>();
 
-                this.cameraX += (targetX - this.cameraX) * this.CAMERA_SMOOTHING;
-                this.cameraY += (targetY - this.cameraY) * this.CAMERA_SMOOTHING;
+        for (const entity of entities) {
+            seen.add(entity.id);
+            let graphic = map.get(entity.id);
 
-                this.map.position.set(this.cameraX, this.cameraY);
+            if (!graphic) {
+                graphic = factory(entity);
+                map.set(entity.id, graphic);
+                this.mapLayer.addChild(graphic);
+            }
+
+            graphic.position.set(entity.x, entity.y);
+
+            if ("rot" in entity && graphic.children.length > 0) {
+                graphic.children[0].rotation = entity.rot; // sprite is child 0, hud is 1
+            }
+
+            if ("name" in entity || "hp" in entity || "sp" in entity) {
+                const hud = this.huds.get(entity.id);
+                if (hud) {
+                    const resource = GAME_RESOURCES[entity.resourceId];
+                    this.populateHud(hud, entity, resource);
+                }
             }
         }
 
-        for (const asteroid of state.asteroids) {
-            const resource = GAME_ASTEROIDS[asteroid.resourceId];
+        for (const [id, graphic] of map) {
+            if (!seen.has(id)) {
+                map.delete(id);
+                this.huds.delete(id);
+                this.mapLayer.removeChild(graphic);
+                graphic.destroy({ children: true });
+            }
+        }
+    }
 
-            const asteroidGraphic = this.renderSprite(resource.sprite);
-            asteroidGraphic.position.set(asteroid.x, asteroid.y);
+    private renderEntity(
+        entity: GameState["ships" | "asteroids" | "projectiles"][number],
+        skipHud?: boolean,
+    ) {
+        const resource = GAME_RESOURCES[entity.resourceId];
+        const container = new Container();
 
-            this.map.addChild(this.renderHud(asteroid, resource));
+        const graphic = this.renderSprite(resource.sprite);
+        container.addChild(graphic);
 
-            this.map.addChild(asteroidGraphic);
+        if (!skipHud) {
+            const hud = new Container();
+            this.populateHud(hud, entity, resource);
+            container.addChild(hud);
+            this.huds.set(entity.id, hud);
         }
 
-        for (const projectile of state.projectiles) {
-            const resource = GAME_PROJECTILES[projectile.resourceId];
-
-            const projectileGraphic = this.renderSprite(resource.sprite);
-            projectileGraphic.position.set(projectile.x, projectile.y);
-
-            this.map.addChild(projectileGraphic);
-        }
+        return container;
     }
 
     private renderSprite(sprite: GameResource["sprite"]) {
@@ -123,41 +168,45 @@ export class GameRenderer {
         }
     }
 
-    private renderHud(
-        entity: { x: number; y: number; hp?: number; sp?: number; name?: string },
+    private populateHud(
+        hud: Container,
+        entity: GameState["ships" | "asteroids" | "projectiles"][number],
         resource: { radius: number; health?: number; shield?: number },
     ) {
-        const hud = new Container();
-        hud.position.set(entity.x, entity.y - resource.radius + 50);
+        hud.removeChildren();
+
+        const verticalOffset = "name" in entity ? resource.radius + 30 : resource.radius + 5;
+        hud.position.set(0, verticalOffset);
 
         const barWidth = 50;
         const barHeight = 4;
 
-        if (entity.hp && resource.health) {
-            hud.addChild(
-                new Graphics()
-                    .rect(-barWidth / 2, 0, barWidth, barHeight)
-                    .fill(colors.healthBarLow)
-                    .rect(-barWidth / 2, 0, barWidth * (entity.hp / resource.health), barHeight)
-                    .fill(colors.healthBarHigh),
-            );
-        }
-        if (entity.sp && resource.shield) {
-            hud.addChild(
-                new Graphics()
-                    .rect(-barWidth / 2, barHeight + 2, barWidth, barHeight)
-                    .fill(colors.shieldBarLow)
-                    .rect(
-                        -barWidth / 2,
-                        barHeight + 2,
-                        barWidth * (entity.sp / resource.shield),
-                        barHeight,
-                    )
-                    .fill(colors.shieldBarHigh),
-            );
+        if ("hp" in entity && resource.health) {
+            const healthBg = new Graphics()
+                .rect(-barWidth / 2, 0, barWidth, barHeight)
+                .fill(colors.healthBarLow);
+            const healthFill = new Graphics()
+                .rect(-barWidth / 2, 0, barWidth * (entity.hp / resource.health), barHeight)
+                .fill(colors.healthBarHigh);
+            hud.addChild(healthBg, healthFill);
         }
 
-        if (entity.name) {
+        if ("sp" in entity && resource.shield) {
+            const shieldBg = new Graphics()
+                .rect(-barWidth / 2, barHeight + 2, barWidth, barHeight)
+                .fill(colors.shieldBarLow);
+            const shieldFill = new Graphics()
+                .rect(
+                    -barWidth / 2,
+                    barHeight + 2,
+                    barWidth * (entity.sp / resource.shield),
+                    barHeight,
+                )
+                .fill(colors.shieldBarHigh);
+            hud.addChild(shieldBg, shieldFill);
+        }
+
+        if ("name" in entity) {
             const name = new Text({
                 text: entity.name + ` ${Math.floor(entity.x)}, ${Math.floor(entity.y)}`,
                 style: { fill: colors.fontLight, fontSize: 12 },
@@ -166,8 +215,6 @@ export class GameRenderer {
             name.position.set(0, -4);
             hud.addChild(name);
         }
-
-        return hud;
     }
 
     private renderGrid(map: GameMap) {
