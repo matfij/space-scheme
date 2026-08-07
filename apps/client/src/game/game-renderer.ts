@@ -20,12 +20,17 @@ const colors = {
 };
 
 export class GameRenderer {
+    private readonly CAMERA_SMOOTHING = 0.12;
+
     private isInitialized = false;
     private isDestroyed = false;
 
     private readonly app = new Application();
     private readonly map = new Container();
     private readonly grid = new Graphics();
+
+    private cameraX = 0;
+    private cameraY = 0;
 
     async initialize(container: HTMLElement) {
         await this.app.init({
@@ -70,10 +75,13 @@ export class GameRenderer {
             this.map.addChild(shipGraphic);
 
             if (ship.id === "new-player") {
-                this.map.position.set(
-                    Math.round(this.app.screen.width / 2 - ship.x),
-                    Math.round(this.app.screen.height / 2 - ship.y),
-                );
+                const targetX = this.app.screen.width / 2 - ship.x;
+                const targetY = this.app.screen.height / 2 - ship.y;
+
+                this.cameraX += (targetX - this.cameraX) * this.CAMERA_SMOOTHING;
+                this.cameraY += (targetY - this.cameraY) * this.CAMERA_SMOOTHING;
+
+                this.map.position.set(this.cameraX, this.cameraY);
             }
         }
 
@@ -165,10 +173,10 @@ export class GameRenderer {
     private renderGrid(map: GameMap) {
         this.grid.clear();
         for (let x = 0; x <= map.width; x += map.gridSize) {
-            this.grid.moveTo(x, -map.height).lineTo(x, 2 * map.height);
+            this.grid.moveTo(x + 0.5, -map.height).lineTo(x + 0.5, 2 * map.height);
         }
         for (let y = 0; y <= map.height; y += map.gridSize) {
-            this.grid.moveTo(-map.width, y).lineTo(2 * map.width, y);
+            this.grid.moveTo(-map.width, y + 0.5).lineTo(2 * map.width, y + 0.5);
         }
         this.grid.stroke({ color: colors.grid, width: 1 });
     }
