@@ -9,7 +9,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
 
 const colors = {
     background: "#000814",
-    grid: "#afafaf",
+    grid: "rgb(53, 47, 47)",
     fontLight: "#fafafa",
     healthBarLow: "#333333",
     healthBarHigh: "#e63946",
