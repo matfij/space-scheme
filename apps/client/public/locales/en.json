@@ -3,6 +3,12 @@
         "name": "Space Scheme"
     },
     "lobby": {
-        "lobby": "Lobby"
+        "joinGame": "Join game",
+        "username": "Username",
+        "ship": "Ship",
+        "join": "Join"
+    },
+    "errors": {
+        "username": "Username must be between 3 and 12 characters"
     }
 }

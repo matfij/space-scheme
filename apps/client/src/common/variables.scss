@@ -1,0 +1,97 @@
+// Breakpoints
+$mobile-threshold: 768px;
+
+// Typography
+$font-sans:
+    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+
+$font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+
+// Colors
+$color-primary-100: #faf5ff;
+$color-primary-200: #f3e8ff;
+$color-primary-300: #e3c9ff;
+$color-primary-400: #c27aff;
+$color-primary-500: #ad46ff;
+$color-primary-600: #9810fa;
+$color-primary-700: #8200db;
+$color-primary-800: #6e11b0;
+$color-primary-900: #59168b;
+
+$color-secondary-100: #dff2fe;
+$color-secondary-200: #b8e6fe;
+$color-secondary-300: #74d4ff;
+$color-secondary-400: #26beff;
+$color-secondary-500: #00a6f4;
+$color-secondary-600: #0084d1;
+$color-secondary-700: #0069a8;
+$color-secondary-800: #00598a;
+$color-secondary-900: #024a70;
+
+$color-accent-100: #fef3c6;
+$color-accent-200: #fde9ab;
+$color-accent-300: #ffd869;
+$color-accent-400: #ffb900;
+$color-accent-500: #fe9a00;
+$color-accent-600: #e17100;
+$color-accent-700: #bb4d00;
+$color-accent-800: #963c00;
+$color-accent-900: #7b3306;
+
+$color-light-100: #fafafa;
+$color-light-200: #f4f4f5;
+$color-light-300: #e4e4e7;
+$color-light-400: #d4d4d8;
+
+$color-dark-100: #3f3f46;
+$color-dark-200: #27272a;
+$color-dark-300: #18181b;
+$color-dark-400: #09090b;
+
+$color-red-100: #ffe2e2;
+$color-red-200: #ffc9c9;
+$color-red-300: #ffa2a2;
+$color-red-400: #ff6467;
+$color-red-500: #fb2c36;
+$color-red-600: #e7000b;
+$color-red-700: #c10007;
+$color-red-800: #9f0715;
+$color-red-900: #82181a;
+
+$color-green-100: #dcfce7;
+$color-green-200: #b9f8cf;
+$color-green-300: #7bf1a8;
+$color-green-400: #4ade80;
+$color-green-500: #22c55e;
+$color-green-600: #00a63e;
+$color-green-700: #008236;
+$color-green-800: #1c5f36;
+$color-green-900: #194a2a;
+
+// Spacing (4px base, 1rem = 16px)
+$spacing-0: 0;
+$spacing-px: 0.0625rem;
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 0.75rem;
+$spacing-4: 1rem;
+$spacing-5: 1.25rem;
+$spacing-6: 1.5rem;
+$spacing-8: 2rem;
+$spacing-10: 2.5rem;
+$spacing-12: 3rem;
+$spacing-16: 4rem;
+$spacing-20: 5rem;
+$spacing-24: 6rem;
+$spacing-32: 8rem;
+
+// Border radius
+$radius-sm: 0.25rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1rem;
+$radius-2xl: 1.5rem;
+$radius-full: 9999px;

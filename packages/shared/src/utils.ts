@@ -9,3 +9,7 @@ export const safeParse = <T>(data: unknown) => {
 };
 
 export const safeSerialize = (data: unknown) => JSON.stringify(data);
+
+export const isUserNameValid = (value?: string) => {
+    return value?.length && value.length >= 3 && value.length <= 12;
+};
