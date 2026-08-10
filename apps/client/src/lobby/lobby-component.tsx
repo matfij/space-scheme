@@ -1,10 +1,11 @@
-import { genId, isUserNameValid } from "@space/shared";
+import { GAME_SHIPS, genId, isUserNameValid, type ShipGuid } from "@space/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import { routes } from "../common/config";
 import { useGameStore } from "../common/game-store";
+import { ShipItem } from "./ship-item";
 
 import styles from "./lobby-component.module.scss";
 
@@ -12,17 +13,22 @@ export const LobbyComponent = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { startGame } = useGameStore();
-    const [username, setUsername] = useState<string>();
+    const [playerName, setPlayerName] = useState<string>("");
+    const [shipGuid, setShipGuid] = useState<ShipGuid>("ship-falco");
     const [usernameError, setUsernameError] = useState<string>();
+
+    const onShipSelect = (guid: ShipGuid) => {
+        setShipGuid(guid);
+    };
 
     const onJoin = () => {
         setUsernameError(undefined);
-        if (!isUserNameValid(username)) {
+        if (!isUserNameValid(playerName)) {
             setUsernameError(t("errors.username"));
             return;
         }
 
-        startGame(genId(), username as string, "ship-leon");
+        startGame(genId(), playerName, shipGuid);
 
         navigate(routes.game);
     };
@@ -39,11 +45,24 @@ export const LobbyComponent = () => {
                     <input
                         id="username"
                         autoComplete="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={playerName}
+                        onChange={(e) => setPlayerName(e.target.value)}
                         className={styles.formInput}
                     />
                     {usernameError && <p className={styles.formError}>{usernameError}</p>}
+                </div>
+                <div className={styles.inputWrapper}>
+                    <label className={styles.formLabel}>{t("lobby.ship")}</label>
+                    <div className={styles.shipsWrapper}>
+                        {Object.values(GAME_SHIPS).map((ship) => (
+                            <ShipItem
+                                key={ship.guid}
+                                ship={ship}
+                                isSelected={ship.guid === shipGuid}
+                                onSelect={onShipSelect}
+                            />
+                        ))}
+                    </div>
                 </div>
                 <button onClick={onJoin} className={styles.formButton}>
                     {t("lobby.join")}

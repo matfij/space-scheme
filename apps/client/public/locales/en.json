@@ -5,8 +5,15 @@
     "lobby": {
         "joinGame": "Join game",
         "username": "Username",
-        "ship": "Ship",
+        "ship": "Select a spaceship",
         "join": "Join"
+    },
+    "ship": {
+        "mass": "Mass",
+        "hp": "Health",
+        "shield": "Shield",
+        "speed": "Speed",
+        "acceleration": "Acceleration"
     },
     "errors": {
         "username": "Username must be between 3 and 12 characters"

@@ -23,6 +23,7 @@ export type GameResource<T> = {
 } & (
     | {
           type: "Ship";
+          name: string;
           health: number;
           shield: number;
           shieldRegeneration: number;
