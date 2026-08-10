@@ -5,6 +5,7 @@ import {
     GameState,
     safeSerialize,
     GameEntity,
+    ShipGuid,
 } from "@space/shared";
 
 import { AsteroidManager } from "./asteroid-manager";
@@ -38,8 +39,8 @@ export class GameManager {
         });
     }
 
-    addShip(id: string, name: string, shipId: string) {
-        const newShip = ShipManager.createShip(id, name, shipId);
+    addShip(id: string, name: string, shipGuid: ShipGuid) {
+        const newShip = ShipManager.createShip(id, name, shipGuid);
         this.ships.push(newShip);
     }
 
@@ -88,7 +89,7 @@ export class GameManager {
         const state: GameState = {
             ships: this.ships.map((ship) => ({
                 id: ship.id,
-                resourceId: ship.resourceId,
+                resourceGuid: ship.resourceGuid,
                 name: ship.name,
                 hp: ship.hp,
                 sp: ship.sp,
@@ -98,14 +99,14 @@ export class GameManager {
             })),
             asteroids: this.asteroids.map((asteroid) => ({
                 id: asteroid.id,
-                resourceId: asteroid.resourceId,
+                resourceGuid: asteroid.resourceGuid,
                 hp: asteroid.hp,
                 x: asteroid.x,
                 y: asteroid.y,
             })),
             projectiles: this.projectiles.map((projectile) => ({
                 id: projectile.id,
-                resourceId: projectile.resourceId,
+                resourceGuid: projectile.resourceGuid,
                 x: projectile.x,
                 y: projectile.y,
             })),

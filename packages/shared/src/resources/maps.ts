@@ -1,7 +1,7 @@
-import { GameMap } from "./types";
+import type { GameMap } from "./types";
 
 export const MILKY_WAY: GameMap = {
-    id: "map-milky-way",
+    guid: "map-milky-way",
     name: "Milky Way",
     gridSize: 400,
     width: 20_00,

@@ -1,15 +1,18 @@
 import type { EntityKind } from "../entities";
+import type { AsteroidGuid } from "./asteroids";
+import type { ProjectileGuid } from "./projectiles";
+import type { ShipGuid } from "./ships";
 
 export type GameMap = {
-    id: string;
+    guid: string;
     name: string;
     gridSize: number;
     width: number;
     height: number;
 };
 
-export type GameResource = {
-    id: string;
+export type GameResource<T> = {
+    guid: T;
     type: EntityKind;
     radius: number;
     mass: number;
@@ -28,7 +31,7 @@ export type GameResource = {
           acceleration: number;
           rotationSpeed: number;
           projectTileCooldown: number;
-          projectileId: string;
+          projectileGuid: ProjectileGuid;
       }
     | {
           type: "Alien";
@@ -40,7 +43,7 @@ export type GameResource = {
           acceleration: number;
           rotationSpeed: number;
           projectTileCooldown: number;
-          projectileId: string;
+          projectileGuid: ProjectileGuid;
       }
     | {
           type: "Asteroid";
@@ -55,10 +58,10 @@ export type GameResource = {
       }
 );
 
-export type ShipResource = Extract<GameResource, { type: "Ship" }>;
+export type ShipResource = Extract<GameResource<ShipGuid>, { type: "Ship" }>;
 
-export type AlienResource = Extract<GameResource, { type: "Alien" }>;
+export type AlienResource = Extract<GameResource<string>, { type: "Alien" }>;
 
-export type AsteroidResource = Extract<GameResource, { type: "Asteroid" }>;
+export type AsteroidResource = Extract<GameResource<AsteroidGuid>, { type: "Asteroid" }>;
 
-export type ProjectileResource = Extract<GameResource, { type: "Projectile" }>;
+export type ProjectileResource = Extract<GameResource<ProjectileGuid>, { type: "Projectile" }>;

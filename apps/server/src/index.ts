@@ -23,7 +23,7 @@ setInterval(() => {
 
 app.register(async (appInstance) => {
     appInstance.get("/ws", { websocket: true }, (socket, request) => {
-        const { playerId, shipId, name } = request.query as JoinMessage;
+        const { playerId, shipGuid, name } = request.query as JoinMessage;
 
         const existing = players.get(playerId);
         if (existing && existing !== socket) {
@@ -32,7 +32,7 @@ app.register(async (appInstance) => {
 
         players.set(playerId, socket);
         if (!gameManager.hasShip(playerId)) {
-            gameManager.addShip(playerId, name, shipId);
+            gameManager.addShip(playerId, name, shipGuid);
             gameManager.initialize();
         }
 

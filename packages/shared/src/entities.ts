@@ -3,7 +3,7 @@ export type EntityKind = "Ship" | "Alien" | "Asteroid" | "Projectile";
 export type BaseEntity<T extends EntityKind> = {
     type: T;
     id: string;
-    resourceId: string;
+    resourceGuid: string;
     radius: number;
     x: number;
     y: number;

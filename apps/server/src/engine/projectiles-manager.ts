@@ -1,21 +1,21 @@
-import { GAME_PROJECTILES, ProjectileEntity, ProjectileId } from "@space/shared";
+import { GAME_PROJECTILES, ProjectileEntity, ProjectileGuid } from "@space/shared";
 
 import { genId } from "../utils";
 
 export class ProjectilesManger {
     static createProjectile(params: {
         shooterId: string;
-        projectileId: ProjectileId;
+        projectileGuid: ProjectileGuid;
         x: number;
         y: number;
         rot: number;
     }): ProjectileEntity {
-        const resource = GAME_PROJECTILES[params.projectileId];
+        const resource = GAME_PROJECTILES[params.projectileGuid];
         return {
             id: genId(),
             type: "Projectile",
             shooterId: params.shooterId,
-            resourceId: params.projectileId,
+            resourceGuid: params.projectileGuid,
             radius: resource.radius,
             traveled: 0,
             travelLimit: resource.range,

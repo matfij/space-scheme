@@ -4,11 +4,11 @@ import { genId, randRange } from "../utils";
 
 export class AsteroidManager {
     static createAsteroid(x: number, y: number): AsteroidEntity {
-        const resource = GAME_ASTEROIDS["asteroid-small-ball"];
+        const resource = GAME_ASTEROIDS["ast-small-ball"];
         return {
             id: genId(),
             type: "Asteroid",
-            resourceId: "asteroid-small-ball",
+            resourceGuid: "ast-small-ball",
             hp: resource.health,
             radius: resource.radius,
             x,

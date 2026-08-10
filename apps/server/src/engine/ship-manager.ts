@@ -1,14 +1,14 @@
-import { GAME_SHIPS, ProjectileEntity, ProjectileId, ShipEntity } from "@space/shared";
+import { GAME_SHIPS, ProjectileEntity, ProjectileGuid, ShipEntity, ShipGuid } from "@space/shared";
 
 import { ProjectilesManger } from "./projectiles-manager";
 
 export class ShipManager {
-    static createShip(id: string, name: string, shipId: string): ShipEntity {
-        const resource = GAME_SHIPS[shipId];
+    static createShip(id: string, name: string, shipGuid: ShipGuid): ShipEntity {
+        const resource = GAME_SHIPS[shipGuid];
         return {
             id,
             type: "Ship",
-            resourceId: shipId,
+            resourceGuid: shipGuid,
             name: name,
             hp: resource.health,
             sp: resource.shield,
@@ -26,7 +26,7 @@ export class ShipManager {
     static moveShip(dt: number, ship: ShipEntity, projectiles: ProjectileEntity[]) {
         let dx = 0;
         let dy = 0;
-        const resource = GAME_SHIPS[ship.resourceId];
+        const resource = GAME_SHIPS[ship.resourceGuid];
 
         if (ship.inputs.includes("KeyA")) {
             dx--;
@@ -43,7 +43,7 @@ export class ShipManager {
         if (ship.inputs.includes("KeyO")) {
             this.addProjectile({
                 shooterId: ship.id,
-                projectileId: resource.projectileId,
+                projectileGuid: resource.projectileGuid,
                 x: ship.x,
                 y: ship.y,
                 rot: ship.rot,
@@ -86,7 +86,7 @@ export class ShipManager {
 
     static addProjectile(params: {
         shooterId: string;
-        projectileId: ProjectileId;
+        projectileGuid: ProjectileGuid;
         x: number;
         y: number;
         rot: number;

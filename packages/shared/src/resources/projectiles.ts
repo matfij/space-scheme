@@ -1,7 +1,9 @@
 import type { ProjectileResource } from "./types";
 
+export type ProjectileGuid = "proj-swift-laser" | "proj-heavy-laser";
+
 export const SWIFT_LASER: ProjectileResource = {
-    id: "projectile-swift-laser",
+    guid: "proj-swift-laser",
     type: "Projectile",
     radius: 1,
     mass: 1,
@@ -14,10 +16,8 @@ export const SWIFT_LASER: ProjectileResource = {
         width: 1,
         radius: 1,
     },
-};
-
-export const GAME_PROJECTILES: Record<string, ProjectileResource> = {
-    [SWIFT_LASER.id]: SWIFT_LASER,
 } as const;
 
-export type ProjectileId = keyof typeof GAME_PROJECTILES;
+export const GAME_PROJECTILES = {
+    [SWIFT_LASER.guid]: SWIFT_LASER,
+} as const;

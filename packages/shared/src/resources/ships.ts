@@ -1,7 +1,9 @@
 import type { ShipResource } from "./types";
 
+export type ShipGuid = "ship-leon" | "ship-bastion";
+
 export const LEON: ShipResource = {
-    id: "ship-leon",
+    guid: "ship-leon",
     type: "Ship",
     health: 500,
     shield: 100,
@@ -12,7 +14,7 @@ export const LEON: ShipResource = {
     maxSpeed: 300,
     acceleration: 1000,
     projectTileCooldown: 60,
-    projectileId: "projectile-swift-laser",
+    projectileGuid: "proj-swift-laser",
     rotationSpeed: 3,
     sprite: {
         type: "Polygon",
@@ -27,8 +29,6 @@ export const LEON: ShipResource = {
     },
 };
 
-export const GAME_SHIPS: Record<string, ShipResource> = {
-    [LEON.id]: LEON,
+export const GAME_SHIPS = {
+    [LEON.guid]: LEON,
 } as const;
-
-export type ShipId = keyof typeof GAME_SHIPS;

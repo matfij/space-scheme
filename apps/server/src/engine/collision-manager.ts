@@ -42,8 +42,8 @@ export class CollisionManager {
     static resolveCollision(a: GameEntity, b: GameEntity) {
         const key = [a.type, b.type].sort().join("-") as `${EntityKind}-${EntityKind}`;
 
-        const aRes = GAME_RESOURCES[a.resourceId];
-        const bRes = GAME_RESOURCES[b.resourceId];
+        const aRes = GAME_RESOURCES[a.resourceGuid];
+        const bRes = GAME_RESOURCES[b.resourceGuid];
 
         let nx = b.x - a.x;
         let ny = b.y - a.y;
@@ -82,9 +82,9 @@ export class CollisionManager {
         switch (key) {
             case "Asteroid-Asteroid": {
                 const ast1 = a as AsteroidEntity;
-                const astRes1 = GAME_ASTEROIDS[ast1.resourceId];
+                const astRes1 = GAME_ASTEROIDS[ast1.resourceGuid];
                 const ast2 = b as AsteroidEntity;
-                const astRes2 = GAME_ASTEROIDS[ast2.resourceId];
+                const astRes2 = GAME_ASTEROIDS[ast2.resourceGuid];
 
                 ast1.hp -= impactSpeed * astRes2.mass;
                 ast2.hp -= impactSpeed * astRes1.mass;
@@ -93,9 +93,9 @@ export class CollisionManager {
             }
             case "Asteroid-Ship": {
                 const shp = (a.type === "Ship" ? a : b) as ShipEntity;
-                const shpRes = GAME_SHIPS[shp.resourceId];
+                const shpRes = GAME_SHIPS[shp.resourceGuid];
                 const ast = (a.type === "Asteroid" ? a : b) as AsteroidEntity;
-                const astRes = GAME_ASTEROIDS[ast.resourceId];
+                const astRes = GAME_ASTEROIDS[ast.resourceGuid];
 
                 this.applyDamageWithShield(
                     shp,
@@ -109,7 +109,7 @@ export class CollisionManager {
             case "Asteroid-Projectile": {
                 const ast = (a.type === "Asteroid" ? a : b) as AsteroidEntity;
                 const prj = (a.type === "Projectile" ? a : b) as ProjectileEntity;
-                const prjRes = GAME_PROJECTILES[prj.resourceId];
+                const prjRes = GAME_PROJECTILES[prj.resourceGuid];
 
                 ast.hp -= prjRes.damage;
                 prj.traveled = prj.travelLimit;
@@ -118,9 +118,9 @@ export class CollisionManager {
             }
             case "Ship-Ship": {
                 const shp1 = a as ShipEntity;
-                const shpRes1 = GAME_SHIPS[shp1.resourceId];
+                const shpRes1 = GAME_SHIPS[shp1.resourceGuid];
                 const shp2 = b as ShipEntity;
-                const shpRes2 = GAME_SHIPS[shp2.resourceId];
+                const shpRes2 = GAME_SHIPS[shp2.resourceGuid];
 
                 this.applyDamageWithShield(
                     shp1,
@@ -136,7 +136,7 @@ export class CollisionManager {
             case "Ship-Projectile": {
                 const shp = (a.type === "Ship" ? a : b) as ShipEntity;
                 const prj = (a.type === "Projectile" ? a : b) as ProjectileEntity;
-                const prjRes = GAME_PROJECTILES[prj.resourceId];
+                const prjRes = GAME_PROJECTILES[prj.resourceGuid];
 
                 this.applyDamageWithShield(shp, prjRes.damage);
                 prj.traveled = prj.travelLimit;
