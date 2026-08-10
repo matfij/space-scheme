@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
-import { routes } from "./config";
+import { routes } from "./common/config";
 import { GameComponent } from "./game/game-component";
 import { LobbyComponent } from "./lobby/lobby-component";
 

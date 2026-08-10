@@ -4,8 +4,11 @@ import {
     type GameMap,
     type GameResource,
     type GameState,
+    type ResourceGuid,
 } from "@space/shared";
 import { Application, Container, Graphics, Text } from "pixi.js";
+
+import { useGameStore } from "../common/game-store";
 
 const colors = {
     background: "#000814",
@@ -19,6 +22,8 @@ const colors = {
 
 export class GameRenderer {
     private readonly CAMERA_SMOOTHING = 0.12;
+
+    private playerId = useGameStore.getState().playerId;
 
     private isInitialized = false;
     private isDestroyed = false;
@@ -64,7 +69,7 @@ export class GameRenderer {
             return;
         }
 
-        const playerShip = state.ships.find((ship) => ship.id === "new-player");
+        const playerShip = state.ships.find((ship) => ship.id === this.playerId);
         if (playerShip) {
             const targetX = this.app.screen.width / 2 - playerShip.x;
             const targetY = this.app.screen.height / 2 - playerShip.y;
@@ -115,7 +120,7 @@ export class GameRenderer {
             if ("name" in entity || "hp" in entity || "sp" in entity) {
                 const hud = this.huds.get(entity.id);
                 if (hud) {
-                    const resource = GAME_RESOURCES[entity.resourceId];
+                    const resource = GAME_RESOURCES[entity.resourceGuid];
                     this.populateHud(hud, entity, resource);
                 }
             }
@@ -135,7 +140,7 @@ export class GameRenderer {
         entity: GameState["ships" | "asteroids" | "projectiles"][number],
         skipHud?: boolean,
     ) {
-        const resource = GAME_RESOURCES[entity.resourceId];
+        const resource = GAME_RESOURCES[entity.resourceGuid];
         const container = new Container();
 
         const graphic = this.renderSprite(resource.sprite);
@@ -151,7 +156,7 @@ export class GameRenderer {
         return container;
     }
 
-    private renderSprite(sprite: GameResource["sprite"]) {
+    private renderSprite(sprite: GameResource<ResourceGuid>["sprite"]) {
         switch (sprite.type) {
             case "Circle":
                 return new Graphics().circle(0, 0, sprite.radius).fill(sprite.color);

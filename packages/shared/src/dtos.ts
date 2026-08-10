@@ -1,3 +1,5 @@
+import type { ShipGuid } from "./resources";
+
 export type GameState = {
     ships: {
         id: string;
@@ -15,8 +17,8 @@ export type GameState = {
 
 export type JoinMessage = {
     playerId: string;
-    shipGuid: string;
-    name: string;
+    playerName: string;
+    shipGuid: ShipGuid;
 };
 
 export type GameMessage = {

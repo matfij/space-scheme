@@ -1,15 +1,17 @@
-import { isUserNameValid } from "@space/shared";
+import { genId, isUserNameValid } from "@space/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
-import { routes } from "../config";
+import { routes } from "../common/config";
+import { useGameStore } from "../common/game-store";
 
 import styles from "./lobby-component.module.scss";
 
 export const LobbyComponent = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { startGame } = useGameStore();
     const [username, setUsername] = useState<string>();
     const [usernameError, setUsernameError] = useState<string>();
 
@@ -20,7 +22,7 @@ export const LobbyComponent = () => {
             return;
         }
 
-        // TODO - persist user data
+        startGame(genId(), username as string, "ship-leon");
 
         navigate(routes.game);
     };

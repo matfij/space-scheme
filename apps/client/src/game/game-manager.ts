@@ -1,8 +1,11 @@
 import { safeParse, safeSerialize, type GameState, type JoinMessage } from "@space/shared";
 
+import { useGameStore } from "../common/game-store";
 import { GameRenderer } from "./game-renderer";
 
 export class GameManger {
+    private playerId = useGameStore.getState().playerId!;
+
     private isDestroyed = false;
     private hasClearedInput = false;
 
@@ -23,10 +26,11 @@ export class GameManger {
     }
 
     private connectWs(url: string) {
+        const gameState = useGameStore.getState();
         const params: JoinMessage = {
-            playerId: "new-player",
-            shipId: "ship-leon",
-            name: "Admin",
+            playerId: gameState.playerId!,
+            playerName: gameState.playerName!,
+            shipGuid: gameState.shipGuid!,
         };
         const query = new URLSearchParams(params).toString();
         this.ws = new WebSocket(`${url}?${query}`);
@@ -60,7 +64,7 @@ export class GameManger {
 
     private sendInput() {
         if (this.ws?.readyState === WebSocket.OPEN) {
-            this.ws.send(safeSerialize({ playerId: "new-player", inputs: Array.from(this.keys) }));
+            this.ws.send(safeSerialize({ playerId: this.playerId, inputs: Array.from(this.keys) }));
         }
     }
 
