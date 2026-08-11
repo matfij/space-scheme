@@ -6,6 +6,7 @@ import type { ShipGuid } from "./ships";
 export type GameMap = {
     guid: string;
     name: string;
+    imageUri: string;
     gridSize: number;
     width: number;
     height: number;

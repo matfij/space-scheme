@@ -1,4 +1,10 @@
-import { safeParse, safeSerialize, type GameState, type JoinMessage } from "@space/shared";
+import {
+    MILKY_WAY,
+    safeParse,
+    safeSerialize,
+    type GameState,
+    type JoinMessage,
+} from "@space/shared";
 
 import { useGameStore } from "../common/game-store";
 import { GameRenderer } from "./game-renderer";
@@ -15,7 +21,7 @@ export class GameManger {
 
     async initialize(container: HTMLElement, url: string) {
         this.renderer = new GameRenderer();
-        await this.renderer.initialize(container);
+        await this.renderer.initialize(container, MILKY_WAY);
 
         if (this.isDestroyed) {
             return;

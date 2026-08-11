@@ -1,12 +1,11 @@
 import {
     GAME_RESOURCES,
-    MILKY_WAY,
     type GameMap,
     type GameResource,
     type GameState,
     type ResourceGuid,
 } from "@space/shared";
-import { Application, Container, Graphics, Text } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, Text } from "pixi.js";
 
 import { useGameStore } from "../common/game-store";
 
@@ -32,6 +31,7 @@ export class GameRenderer {
     private mapLayer = new Container();
 
     private grid = new Graphics();
+    private background = new Sprite();
 
     private huds = new Map<string, Container>();
     private shipGraphics = new Map<string, Container>();
@@ -41,7 +41,7 @@ export class GameRenderer {
     private cameraX = 0;
     private cameraY = 0;
 
-    async initialize(container: HTMLElement) {
+    async initialize(container: HTMLElement, map: GameMap) {
         await this.app.init({
             background: colors.background,
             antialias: true,
@@ -50,7 +50,10 @@ export class GameRenderer {
         container.appendChild(this.app.canvas);
         this.app.stage.addChild(this.mapLayer);
 
-        this.renderGrid(MILKY_WAY);
+        await this.renderBackground(map);
+        this.mapLayer.addChild(this.background);
+
+        this.renderGrid(map);
         this.mapLayer.addChild(this.grid);
 
         this.app.resizeTo = container;
@@ -231,6 +234,14 @@ export class GameRenderer {
             this.grid.moveTo(-map.width, y + 0.5).lineTo(2 * map.width, y + 0.5);
         }
         this.grid.stroke({ color: colors.grid, width: 1 });
+    }
+
+    private async renderBackground(map: GameMap) {
+        const texture = await Assets.load(map.imageUri);
+        this.background.texture = texture;
+        this.background.width = map.width;
+        this.background.height = map.height;
+        this.background.alpha = 0.5;
     }
 
     destroy() {
