@@ -10,6 +10,7 @@
     },
     "ship": {
         "mass": "Mass",
+        "firepower": "Firepower",
         "hp": "Health",
         "shield": "Shield",
         "speed": "Speed",
