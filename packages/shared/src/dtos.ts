@@ -12,7 +12,7 @@ export type GameState = {
         rot: number;
     }[];
     asteroids: { id: string; resourceGuid: string; hp: number; x: number; y: number }[];
-    projectiles: { id: string; resourceGuid: string; x: number; y: number }[];
+    projectiles: { id: string; resourceGuid: string; x: number; y: number; rot: number }[];
 };
 
 export type JoinMessage = {

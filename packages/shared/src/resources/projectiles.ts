@@ -7,17 +7,40 @@ export const SWIFT_LASER: ProjectileResource = {
     type: "Projectile",
     radius: 1,
     mass: 1,
-    speed: 900,
-    range: 900,
+    speed: 1100,
+    range: 700,
     damage: 10,
     sprite: {
-        type: "Circle",
-        color: "#f00",
+        type: "Polygon",
+        color: "rgb(225, 215, 18)",
         width: 1,
-        radius: 1,
+        coordinates: [
+            [0, 0],
+            [2, 0],
+        ],
+    },
+} as const;
+
+export const HEAVY_LASER: ProjectileResource = {
+    guid: "proj-heavy-laser",
+    type: "Projectile",
+    radius: 2,
+    mass: 1,
+    speed: 700,
+    range: 900,
+    damage: 20,
+    sprite: {
+        type: "Polygon",
+        color: "rgb(247, 156, 9)",
+        width: 2,
+        coordinates: [
+            [0, 0],
+            [4, 0],
+        ],
     },
 } as const;
 
 export const GAME_PROJECTILES = {
     [SWIFT_LASER.guid]: SWIFT_LASER,
+    [HEAVY_LASER.guid]: HEAVY_LASER,
 } as const;

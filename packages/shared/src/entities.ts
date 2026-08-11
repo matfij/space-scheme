@@ -27,6 +27,7 @@ export type AlienEntity = BaseEntity<"Alien"> & {
 };
 
 export type ProjectileEntity = BaseEntity<"Projectile"> & {
+    rot: number;
     shooterId: string;
     traveled: number;
     travelLimit: number;

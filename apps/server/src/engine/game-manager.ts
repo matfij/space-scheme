@@ -109,6 +109,7 @@ export class GameManager {
                 resourceGuid: projectile.resourceGuid,
                 x: projectile.x,
                 y: projectile.y,
+                rot: projectile.rot,
             })),
         };
 

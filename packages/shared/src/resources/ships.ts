@@ -15,7 +15,7 @@ export const FALCO: ShipResource = {
     maxSpeed: 300,
     acceleration: 1000,
     projectTileCooldown: 60,
-    projectileGuid: "proj-swift-laser",
+    projectileGuids: ["proj-swift-laser", "proj-swift-laser"],
     rotationSpeed: 3,
     sprite: {
         type: "Polygon",
@@ -43,7 +43,7 @@ export const AEGIS: ShipResource = {
     maxSpeed: 200,
     acceleration: 600,
     projectTileCooldown: 60,
-    projectileGuid: "proj-swift-laser",
+    projectileGuids: ["proj-heavy-laser", "proj-heavy-laser"],
     rotationSpeed: 2,
     sprite: {
         type: "Polygon",
@@ -64,7 +64,7 @@ export const LEON: ShipResource = {
     name: "Leon",
     type: "Ship",
     health: 800,
-    shield: 150,
+    shield: 100,
     shieldRegeneration: 10,
     radius: 13,
     mass: 60,
@@ -72,7 +72,7 @@ export const LEON: ShipResource = {
     maxSpeed: 260,
     acceleration: 800,
     projectTileCooldown: 60,
-    projectileGuid: "proj-swift-laser",
+    projectileGuids: ["proj-swift-laser", "proj-swift-laser", "proj-swift-laser"],
     rotationSpeed: 2.5,
     sprite: {
         type: "Polygon",

@@ -1,4 +1,4 @@
-import { GAME_SHIPS, ProjectileEntity, ProjectileGuid, ShipEntity, ShipGuid } from "@space/shared";
+import { GAME_SHIPS, ProjectileEntity, ShipEntity, ShipGuid } from "@space/shared";
 
 import { ProjectilesManger } from "./projectiles-manager";
 
@@ -41,9 +41,10 @@ export class ShipManager {
             dy++;
         }
         if (ship.inputs.includes("KeyO")) {
-            this.addProjectile({
+            ProjectilesManger.shootProjectiles({
                 shooterId: ship.id,
-                projectileGuid: resource.projectileGuid,
+                shooterRadius: resource.radius,
+                projectileGuids: resource.projectileGuids,
                 x: ship.x,
                 y: ship.y,
                 rot: ship.rot,
@@ -82,17 +83,5 @@ export class ShipManager {
 
         ship.vx *= resource.drag;
         ship.vy *= resource.drag;
-    }
-
-    static addProjectile(params: {
-        shooterId: string;
-        projectileGuid: ProjectileGuid;
-        x: number;
-        y: number;
-        rot: number;
-        projectiles: ProjectileEntity[];
-    }) {
-        const newProjectile = ProjectilesManger.createProjectile(params);
-        params.projectiles.push(newProjectile);
     }
 }

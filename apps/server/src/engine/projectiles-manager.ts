@@ -3,6 +3,36 @@ import { GAME_PROJECTILES, ProjectileEntity, ProjectileGuid } from "@space/share
 import { genId } from "../utils";
 
 export class ProjectilesManger {
+    static shootProjectiles(params: {
+        shooterId: string;
+        shooterRadius: number;
+        projectileGuids: ProjectileGuid[];
+        x: number;
+        y: number;
+        rot: number;
+        projectiles: ProjectileEntity[];
+    }) {
+        const count = params.projectileGuids.length;
+        const offsetX = -Math.sin(params.rot);
+        const offsetY = Math.cos(params.rot);
+        const spacing = params.shooterRadius / count;
+        const totalWidth = spacing * (count - 1);
+
+        params.projectileGuids.forEach((projectile, i) => {
+            const offset = i * spacing - totalWidth / 2;
+
+            params.projectiles.push(
+                this.createProjectile({
+                    shooterId: params.shooterId,
+                    projectileGuid: projectile,
+                    x: params.x + offsetX * offset,
+                    y: params.y + offsetY * offset,
+                    rot: params.rot,
+                }),
+            );
+        });
+    }
+
     static createProjectile(params: {
         shooterId: string;
         projectileGuid: ProjectileGuid;
@@ -23,6 +53,7 @@ export class ProjectilesManger {
             y: params.y,
             vx: Math.cos(params.rot) * resource.speed,
             vy: Math.sin(params.rot) * resource.speed,
+            rot: params.rot,
         };
     }
 

@@ -32,7 +32,7 @@ export type GameResource<T> = {
           acceleration: number;
           rotationSpeed: number;
           projectTileCooldown: number;
-          projectileGuid: ProjectileGuid;
+          projectileGuids: ProjectileGuid[];
       }
     | {
           type: "Alien";
@@ -44,7 +44,7 @@ export type GameResource<T> = {
           acceleration: number;
           rotationSpeed: number;
           projectTileCooldown: number;
-          projectileGuid: ProjectileGuid;
+          projectileGuids: ProjectileGuid[];
       }
     | {
           type: "Asteroid";

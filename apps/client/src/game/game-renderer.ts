@@ -213,7 +213,7 @@ export class GameRenderer {
 
         if ("name" in entity) {
             const name = new Text({
-                text: entity.name + ` ${Math.floor(entity.x)}, ${Math.floor(entity.y)}`,
+                text: entity.name + ` ${Math.floor(entity.rot)}`,
                 style: { fill: colors.fontLight, fontSize: 12 },
             });
             name.anchor.set(0.5, 1);
