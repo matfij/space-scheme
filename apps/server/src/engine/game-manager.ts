@@ -7,6 +7,7 @@ import {
     ShipGuid,
     GameMap,
     getRandomElement,
+    gameConfig,
 } from "@space/shared";
 
 import { AsteroidManager } from "./asteroid-manager";
@@ -17,6 +18,9 @@ import { AsteroidSpawn } from "./types";
 
 export class GameManager {
     private map: GameMap;
+
+    private slowLoopProgress = 0;
+    private slowLoopThreshold = 10 * gameConfig.dt;
 
     private ships: ShipEntity[] = [];
     private asteroids: AsteroidEntity[] = [];
@@ -64,6 +68,12 @@ export class GameManager {
         });
 
         CollisionManager.checkCollisions([...this.ships, ...this.asteroids, ...this.projectiles]);
+
+        this.slowLoopProgress += dt;
+        if (this.slowLoopProgress >= this.slowLoopThreshold) {
+            this.slowLoopProgress = 0;
+            CollisionManager.checkRadiation([...this.ships, ...this.asteroids], this.map);
+        }
     }
 
     serialize() {

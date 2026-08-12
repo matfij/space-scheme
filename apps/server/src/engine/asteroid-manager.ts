@@ -87,7 +87,13 @@ export class AsteroidManager {
     }
 
     static moveAsteroids(dt: number, asteroids: AsteroidEntity[]) {
-        for (const asteroid of asteroids) {
+        for (let i = 0; i < asteroids.length; i++) {
+            const asteroid = asteroids[i];
+            if (asteroid.hp <= 0) {
+                asteroids[i] = asteroids[asteroids.length - 1];
+                asteroids.pop();
+                continue;
+            }
             AsteroidManager.moveAsteroid(dt, asteroid);
         }
     }

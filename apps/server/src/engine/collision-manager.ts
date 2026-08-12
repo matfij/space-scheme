@@ -6,6 +6,7 @@ import {
     GAME_RESOURCES,
     GAME_SHIPS,
     GameEntity,
+    GameMap,
     ProjectileEntity,
     ShipEntity,
 } from "@space/shared";
@@ -17,6 +18,8 @@ export class CollisionManager {
     private static readonly ASTEROID_TO_SHIP_DMG_FACTOR = 0.02;
     private static readonly SHIP_TO_SHIP_DMG_FACTOR = 0.06;
     private static readonly SHIP_TO_ASTEROID_DMG_FACTOR = 0.08;
+
+    private static readonly RADIATION_DAMAGE_FACTOR = 0.1;
 
     static checkCollisions(entities: GameEntity[]) {
         const grid = new SpatialGrid();
@@ -146,6 +149,25 @@ export class CollisionManager {
 
             case "Projectile-Projectile": {
                 break;
+            }
+        }
+    }
+
+    static checkRadiation(entities: GameEntity[], map: GameMap) {
+        for (const entity of entities) {
+            const dx = entity.x < 0 ? -entity.x : -map.width + entity.x;
+            const dy = entity.y < 0 ? -entity.y : -map.width + entity.x;
+            const dxy = Math.hypot(Math.max(0, dx), Math.max(0, dy));
+
+            const damage = this.RADIATION_DAMAGE_FACTOR * dxy;
+
+            switch (entity.type) {
+                case "Asteroid":
+                    entity.hp -= damage;
+                    break;
+                case "Ship":
+                    entity.hp -= damage;
+                    break;
             }
         }
     }
