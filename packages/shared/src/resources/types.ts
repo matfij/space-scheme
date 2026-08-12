@@ -10,6 +10,8 @@ export type GameMap = {
     gridSize: number;
     width: number;
     height: number;
+    spawnLocations: { x: number; y: number }[];
+    asteroids: { guid: AsteroidGuid; cooldown: number }[];
 };
 
 export type GameResource<T> = {

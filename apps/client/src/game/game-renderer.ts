@@ -10,7 +10,7 @@ import { Application, Assets, Container, Graphics, Sprite, Text } from "pixi.js"
 import { useGameStore } from "../common/game-store";
 
 const colors = {
-    background: "#000814",
+    background: "#860f0f",
     grid: "rgb(53, 47, 47)",
     fontLight: "#fafafa",
     healthBarLow: "#333333",
@@ -216,7 +216,7 @@ export class GameRenderer {
 
         if ("name" in entity) {
             const name = new Text({
-                text: entity.name + ` ${Math.floor(entity.rot)}`,
+                text: entity.name + ` ${Math.floor(entity.x)}, ${Math.floor(entity.y)}`,
                 style: { fill: colors.fontLight, fontSize: 12 },
             });
             name.anchor.set(0.5, 1);
@@ -227,10 +227,10 @@ export class GameRenderer {
 
     private renderGrid(map: GameMap) {
         this.grid.clear();
-        for (let x = 0; x <= map.width; x += map.gridSize) {
+        for (let x = -map.width; x <= 2 * map.width; x += map.gridSize) {
             this.grid.moveTo(x + 0.5, -map.height).lineTo(x + 0.5, 2 * map.height);
         }
-        for (let y = 0; y <= map.height; y += map.gridSize) {
+        for (let y = -map.height; y <= 2 * map.height; y += map.gridSize) {
             this.grid.moveTo(-map.width, y + 0.5).lineTo(2 * map.width, y + 0.5);
         }
         this.grid.stroke({ color: colors.grid, width: 1 });
@@ -241,7 +241,7 @@ export class GameRenderer {
         this.background.texture = texture;
         this.background.width = map.width;
         this.background.height = map.height;
-        this.background.alpha = 0.5;
+        this.background.tint = 0x777777;
     }
 
     destroy() {

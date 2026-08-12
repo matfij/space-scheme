@@ -3,24 +3,36 @@ import { GAME_SHIPS, ProjectileEntity, ShipEntity, ShipGuid } from "@space/share
 import { ProjectilesManger } from "./projectiles-manager";
 
 export class ShipManager {
-    static createShip(id: string, name: string, shipGuid: ShipGuid): ShipEntity {
-        const resource = GAME_SHIPS[shipGuid];
+    static createShip(params: {
+        id: string;
+        name: string;
+        shipGuid: ShipGuid;
+        x: number;
+        y: number;
+    }): ShipEntity {
+        const resource = GAME_SHIPS[params.shipGuid];
         return {
-            id,
+            id: params.id,
             type: "Ship",
-            resourceGuid: shipGuid,
-            name: name,
+            resourceGuid: params.shipGuid,
+            name: params.name,
             hp: resource.health,
             sp: resource.shield,
             radius: resource.radius,
-            x: 0,
-            y: 0,
+            x: params.x,
+            y: params.y,
             rot: 0,
             tRot: 0,
             vx: 0,
             vy: 0,
             inputs: [],
         };
+    }
+
+    static moveShips(dt: number, ships: ShipEntity[], projectiles: ProjectileEntity[]) {
+        for (const ship of ships) {
+            this.moveShip(dt, ship, projectiles);
+        }
     }
 
     static moveShip(dt: number, ship: ShipEntity, projectiles: ProjectileEntity[]) {

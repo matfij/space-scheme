@@ -22,3 +22,7 @@ export const genId = (length = 16) => {
         .join("")
         .slice(0, length);
 };
+
+export const getRandomElement = <T>(array: T[]): T => {
+    return array[Math.floor(Math.random() * array.length)];
+};

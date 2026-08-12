@@ -4,30 +4,33 @@ import {
     ProjectileEntity,
     GameState,
     safeSerialize,
-    GameEntity,
     ShipGuid,
+    GameMap,
+    getRandomElement,
 } from "@space/shared";
 
 import { AsteroidManager } from "./asteroid-manager";
 import { CollisionManager } from "./collision-manager";
 import { ProjectilesManger } from "./projectiles-manager";
 import { ShipManager } from "./ship-manager";
+import { AsteroidSpawn } from "./types";
 
 export class GameManager {
-    private entities: GameEntity[] = [];
+    private map: GameMap;
+
     private ships: ShipEntity[] = [];
     private asteroids: AsteroidEntity[] = [];
     private projectiles: ProjectileEntity[] = [];
 
-    async initialize() {
-        this.addAsteroid(200, 400);
-        this.addAsteroid(300, 400);
-        this.addAsteroid(400, 400);
-        this.addAsteroid(500, 400);
-        this.addAsteroid(600, 400);
-        this.addAsteroid(600, 500);
-        this.addAsteroid(600, 600);
-        this.addAsteroid(600, 700);
+    private asteroidSpawns: AsteroidSpawn[] = [];
+
+    constructor(map: GameMap) {
+        this.map = map;
+        this.asteroidSpawns = map.asteroids.map((asteroid) => ({
+            guid: asteroid.guid,
+            required: asteroid.cooldown,
+            current: 0,
+        }));
     }
 
     setInputs(id: string, inputs: string[]) {
@@ -40,49 +43,27 @@ export class GameManager {
     }
 
     addShip(id: string, name: string, shipGuid: ShipGuid) {
-        const newShip = ShipManager.createShip(id, name, shipGuid);
-        this.ships.push(newShip);
-    }
-
-    hasShip = (id: string) => !!this.ships.find((ship) => ship.id === id);
-
-    removeShip(id: string) {
-        this.ships = this.ships.filter((ship) => ship.id !== id);
-    }
-
-    addAsteroid(x: number, y: number) {
-        const newAsteroid = AsteroidManager.createAsteroid(x, y);
-        this.asteroids.push(newAsteroid);
+        if (!this.ships.find((ship) => ship.id === id)) {
+            const spawn = getRandomElement(this.map.spawnLocations);
+            const newShip = ShipManager.createShip({ id, name, shipGuid, x: spawn.x, y: spawn.y });
+            this.ships.push(newShip);
+        }
     }
 
     update(dt: number) {
-        this.moveShips(dt);
+        ShipManager.moveShips(dt, this.ships, this.projectiles);
+
         ProjectilesManger.moveProjectiles(dt, this.projectiles);
-        this.moveAsteroids(dt);
 
-        this.entities.length = 0;
-        for (const ship of this.ships) {
-            this.entities.push(ship);
-        }
-        for (const asteroid of this.asteroids) {
-            this.entities.push(asteroid);
-        }
-        for (const projectile of this.projectiles) {
-            this.entities.push(projectile);
-        }
-        CollisionManager.checkCollisions(this.entities);
-    }
+        AsteroidManager.moveAsteroids(dt, this.asteroids);
+        AsteroidManager.spawnAsteroids({
+            dt,
+            asteroids: this.asteroids,
+            spawns: this.asteroidSpawns,
+            map: this.map,
+        });
 
-    moveShips(dt: number) {
-        for (const ship of this.ships) {
-            ShipManager.moveShip(dt, ship, this.projectiles);
-        }
-    }
-
-    moveAsteroids(dt: number) {
-        for (const asteroid of this.asteroids) {
-            AsteroidManager.moveAsteroid(dt, asteroid);
-        }
+        CollisionManager.checkCollisions([...this.ships, ...this.asteroids, ...this.projectiles]);
     }
 
     serialize() {

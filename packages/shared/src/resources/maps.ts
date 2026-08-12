@@ -5,6 +5,19 @@ export const MILKY_WAY: GameMap = {
     name: "Milky Way",
     imageUri: "/images/maps/milky-way.png",
     gridSize: 400,
-    width: 8_000,
-    height: 5_000,
+    width: 2000,
+    height: 1000,
+    spawnLocations: [
+        { x: 200, y: 200 },
+        { x: 400, y: 200 },
+        { x: 600, y: 200 },
+        { x: 800, y: 200 },
+        { x: 200, y: 400 },
+        { x: 200, y: 600 },
+        { x: 200, y: 800 },
+    ],
+    asteroids: [
+        { guid: "ast-small-ball", cooldown: 3 },
+        { guid: "ast-med-ball", cooldown: 10 },
+    ],
 };

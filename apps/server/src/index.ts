@@ -1,5 +1,5 @@
 import websocket from "@fastify/websocket";
-import { GameMessage, JoinMessage, safeParse } from "@space/shared";
+import { gameConfig, GameMessage, JoinMessage, MILKY_WAY, safeParse } from "@space/shared";
 import fastify from "fastify";
 
 import { GameManager } from "./engine/game-manager";
@@ -10,10 +10,10 @@ app.register(websocket);
 app.get("/health", async () => ({ status: "ok" }));
 
 const players = new Map();
-const gameManager = new GameManager();
+const gameManager = new GameManager(MILKY_WAY);
 
 setInterval(() => {
-    gameManager.update(50 / 1000);
+    gameManager.update(gameConfig.dt);
     for (const socket of players.values()) {
         if (socket.readyState === socket.OPEN) {
             socket.send(gameManager.serialize());
@@ -31,10 +31,7 @@ app.register(async (appInstance) => {
         }
 
         players.set(playerId, socket);
-        if (!gameManager.hasShip(playerId)) {
-            gameManager.addShip(playerId, playerName, shipGuid);
-            gameManager.initialize();
-        }
+        gameManager.addShip(playerId, playerName, shipGuid);
 
         socket.on("message", (raw) => {
             const message = safeParse<GameMessage>(raw);
