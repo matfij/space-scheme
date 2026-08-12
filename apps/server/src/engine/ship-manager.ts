@@ -25,12 +25,17 @@ export class ShipManager {
             tRot: 0,
             vx: 0,
             vy: 0,
+            isDestroyed: false,
+            respawnProgress: 0,
             inputs: [],
         };
     }
 
     static moveShips(dt: number, ships: ShipEntity[], projectiles: ProjectileEntity[]) {
         for (const ship of ships) {
+            if (ship.isDestroyed) {
+                continue;
+            }
             this.moveShip(dt, ship, projectiles);
         }
     }
@@ -52,6 +57,7 @@ export class ShipManager {
         if (ship.inputs.includes("KeyS")) {
             dy++;
         }
+
         if (ship.inputs.includes("KeyO")) {
             ProjectilesManger.shootProjectiles({
                 shooterId: ship.id,

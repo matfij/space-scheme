@@ -63,11 +63,6 @@ export class ProjectilesManger {
             p.x += dt * p.vx;
             p.y += dt * p.vy;
             p.traveled += Math.hypot(dt * p.vx, dt * p.vy);
-
-            if (p.traveled >= p.travelLimit) {
-                projectiles[i] = projectiles[projectiles.length - 1];
-                projectiles.pop();
-            }
         }
     }
 }

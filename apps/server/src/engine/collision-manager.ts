@@ -156,18 +156,13 @@ export class CollisionManager {
     static checkRadiation(entities: GameEntity[], map: GameMap) {
         for (const entity of entities) {
             const dx = entity.x < 0 ? -entity.x : -map.width + entity.x;
-            const dy = entity.y < 0 ? -entity.y : -map.width + entity.x;
+            const dy = entity.y < 0 ? -entity.y : -map.height + entity.y;
             const dxy = Math.hypot(Math.max(0, dx), Math.max(0, dy));
 
             const damage = this.RADIATION_DAMAGE_FACTOR * dxy;
 
-            switch (entity.type) {
-                case "Asteroid":
-                    entity.hp -= damage;
-                    break;
-                case "Ship":
-                    entity.hp -= damage;
-                    break;
+            if (entity.type === "Asteroid" || entity.type === "Ship") {
+                entity.hp -= damage;
             }
         }
     }

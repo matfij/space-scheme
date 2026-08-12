@@ -17,13 +17,13 @@ export class AsteroidManager {
         map: GameMap;
     }) {
         for (const spawn of params.spawns) {
-            spawn.current += params.dt;
+            spawn.progress += params.dt;
 
-            if (spawn.current < spawn.required) {
+            if (spawn.progress < spawn.threshold) {
                 continue;
             }
 
-            spawn.current = 0;
+            spawn.progress = 0;
 
             let x = 0;
             let y = 0;
@@ -87,13 +87,7 @@ export class AsteroidManager {
     }
 
     static moveAsteroids(dt: number, asteroids: AsteroidEntity[]) {
-        for (let i = 0; i < asteroids.length; i++) {
-            const asteroid = asteroids[i];
-            if (asteroid.hp <= 0) {
-                asteroids[i] = asteroids[asteroids.length - 1];
-                asteroids.pop();
-                continue;
-            }
+        for (const asteroid of asteroids) {
             AsteroidManager.moveAsteroid(dt, asteroid);
         }
     }

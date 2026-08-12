@@ -8,6 +8,7 @@ import {
     GameMap,
     getRandomElement,
     gameConfig,
+    GAME_SHIPS,
 } from "@space/shared";
 
 import { AsteroidManager } from "./asteroid-manager";
@@ -32,8 +33,8 @@ export class GameManager {
         this.map = map;
         this.asteroidSpawns = map.asteroids.map((asteroid) => ({
             guid: asteroid.guid,
-            required: asteroid.cooldown,
-            current: 0,
+            threshold: asteroid.cooldown,
+            progress: 0,
         }));
     }
 
@@ -69,10 +70,56 @@ export class GameManager {
 
         CollisionManager.checkCollisions([...this.ships, ...this.asteroids, ...this.projectiles]);
 
+        this.checkDestruction();
+
         this.slowLoopProgress += dt;
         if (this.slowLoopProgress >= this.slowLoopThreshold) {
-            this.slowLoopProgress = 0;
             CollisionManager.checkRadiation([...this.ships, ...this.asteroids], this.map);
+
+            this.checkRespawn(this.slowLoopThreshold);
+
+            this.slowLoopProgress = 0;
+        }
+    }
+
+    private checkDestruction() {
+        this.asteroids = this.asteroids.filter((asteroid) => asteroid.hp > 0);
+
+        this.projectiles = this.projectiles.filter(
+            (projectile) => projectile.traveled < projectile.travelLimit,
+        );
+
+        for (const ship of this.ships) {
+            if (ship.isDestroyed || ship.hp > 0) {
+                continue;
+            }
+            ship.isDestroyed = true;
+            ship.vx = 0;
+            ship.vx = 0;
+            ship.tRot = 0;
+            ship.respawnProgress = 0;
+        }
+    }
+
+    private checkRespawn(dt: number) {
+        for (const ship of this.ships) {
+            if (!ship.isDestroyed) {
+                continue;
+            }
+            if (ship.respawnProgress >= gameConfig.playerRespawnThreshold) {
+                ship.isDestroyed = false;
+                ship.respawnProgress = 0;
+
+                const resource = GAME_SHIPS[ship.resourceGuid];
+                ship.hp = resource.health;
+                ship.sp = resource.shield;
+
+                const spawn = getRandomElement(this.map.spawnLocations);
+                ship.x = spawn.x;
+                ship.y = spawn.y;
+            } else {
+                ship.respawnProgress += dt;
+            }
         }
     }
 

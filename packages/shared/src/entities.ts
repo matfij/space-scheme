@@ -17,6 +17,8 @@ export type ShipEntity = BaseEntity<"Ship"> & {
     sp: number;
     rot: number;
     tRot: number;
+    isDestroyed: boolean;
+    respawnProgress: number;
     inputs: string[];
 };
 
