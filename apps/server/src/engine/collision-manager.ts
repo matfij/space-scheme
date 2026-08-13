@@ -5,6 +5,7 @@ import {
     GAME_PROJECTILES,
     GAME_RESOURCES,
     GAME_SHIPS,
+    gameConfig,
     GameEntity,
     GameMap,
     ProjectileEntity,
@@ -136,7 +137,7 @@ export class CollisionManager {
 
                 break;
             }
-            case "Ship-Projectile": {
+            case "Projectile-Ship": {
                 const shp = (a.type === "Ship" ? a : b) as ShipEntity;
                 const prj = (a.type === "Projectile" ? a : b) as ProjectileEntity;
                 const prjRes = GAME_PROJECTILES[prj.resourceGuid];

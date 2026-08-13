@@ -5,11 +5,11 @@ export type ProjectileGuid = "proj-swift-laser" | "proj-heavy-laser";
 export const SWIFT_LASER: ProjectileResource = {
     guid: "proj-swift-laser",
     type: "Projectile",
-    radius: 1,
-    mass: 1,
-    speed: 1100,
+    radius: 2,
+    mass: 0.1,
+    speed: 700,
     range: 700,
-    damage: 10,
+    damage: 20,
     sprite: {
         type: "Polygon",
         color: "rgb(225, 215, 18)",
@@ -24,11 +24,11 @@ export const SWIFT_LASER: ProjectileResource = {
 export const HEAVY_LASER: ProjectileResource = {
     guid: "proj-heavy-laser",
     type: "Projectile",
-    radius: 2,
-    mass: 1,
-    speed: 700,
+    radius: 3,
+    mass: 0.3,
+    speed: 500,
     range: 900,
-    damage: 20,
+    damage: 40,
     sprite: {
         type: "Polygon",
         color: "rgb(247, 156, 9)",
