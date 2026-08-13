@@ -76,6 +76,8 @@ export class GameManager {
         if (this.slowLoopProgress >= this.slowLoopThreshold) {
             CollisionManager.checkRadiation([...this.ships, ...this.asteroids], this.map);
 
+            ShipManager.regenerateShields(this.ships);
+
             this.checkRespawn(this.slowLoopThreshold);
 
             this.slowLoopProgress = 0;

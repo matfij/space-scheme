@@ -102,4 +102,14 @@ export class ShipManager {
         ship.vx *= resource.drag;
         ship.vy *= resource.drag;
     }
+
+    static regenerateShields(ships: ShipEntity[]) {
+        for (const ship of ships) {
+            if (ship.isDestroyed) {
+                continue;
+            }
+            const resource = GAME_SHIPS[ship.resourceGuid];
+            ship.sp = Math.min(resource.shield, ship.sp + resource.shieldRegeneration);
+        }
+    }
 }
