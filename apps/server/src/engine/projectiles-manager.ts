@@ -18,6 +18,10 @@ export class ProjectilesManger {
         const spacing = params.shooterRadius / count;
         const totalWidth = spacing * (count - 1);
 
+        const dirX = Math.cos(params.rot);
+        const dirY = Math.sin(params.rot);
+        const spawnDist = params.shooterRadius + 1;
+
         params.projectileGuids.forEach((projectile, i) => {
             const offset = i * spacing - totalWidth / 2;
 
@@ -25,8 +29,8 @@ export class ProjectilesManger {
                 this.createProjectile({
                     shooterId: params.shooterId,
                     projectileGuid: projectile,
-                    x: params.x + offsetX * offset,
-                    y: params.y + offsetY * offset,
+                    x: params.x + offsetX * offset + dirX * spawnDist,
+                    y: params.y + offsetY * offset + dirY * spawnDist,
                     rot: params.rot,
                 }),
             );

@@ -5,7 +5,6 @@ import {
     GAME_PROJECTILES,
     GAME_RESOURCES,
     GAME_SHIPS,
-    gameConfig,
     GameEntity,
     GameMap,
     ProjectileEntity,
