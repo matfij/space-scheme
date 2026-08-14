@@ -25,27 +25,7 @@ export class AsteroidManager {
 
             spawn.progress = 0;
 
-            let x = 0;
-            let y = 0;
-
-            switch (getRandomElement(["top", "bottom", "left", "right"] as const)) {
-                case "top":
-                    x = randRange(100, params.map.width - 100);
-                    y = -200;
-                    break;
-                case "bottom":
-                    x = randRange(100, params.map.width - 100);
-                    y = params.map.height + 200;
-                    break;
-                case "left":
-                    x = -200;
-                    y = randRange(100, params.map.height - 100);
-                    break;
-                case "right":
-                    x = params.map.width + 200;
-                    y = randRange(100, params.map.height - 100);
-                    break;
-            }
+            const { x, y } = this.getSpawnLocation(params.map);
 
             const rot = Math.atan2(
                 randRange(0, params.map.height) - y,
@@ -95,5 +75,31 @@ export class AsteroidManager {
     static moveAsteroid(dt: number, asteroid: AsteroidEntity) {
         asteroid.x += dt * asteroid.vx;
         asteroid.y += dt * asteroid.vy;
+    }
+
+    private static getSpawnLocation(map: GameMap) {
+        let x = 0;
+        let y = 0;
+
+        switch (getRandomElement(["top", "bottom", "left", "right"] as const)) {
+            case "top":
+                x = randRange(100, map.width - 100);
+                y = -200;
+                break;
+            case "bottom":
+                x = randRange(100, map.width - 100);
+                y = map.height + 200;
+                break;
+            case "left":
+                x = -200;
+                y = randRange(100, map.height - 100);
+                break;
+            case "right":
+                x = map.width + 200;
+                y = randRange(100, map.height - 100);
+                break;
+        }
+
+        return { x, y };
     }
 }

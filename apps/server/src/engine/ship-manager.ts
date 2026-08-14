@@ -1,5 +1,13 @@
-import { GAME_SHIPS, ProjectileEntity, ShipEntity, ShipGuid } from "@space/shared";
+import {
+    GAME_SHIPS,
+    GameMap,
+    getRandomElement,
+    ProjectileEntity,
+    ShipEntity,
+    ShipGuid,
+} from "@space/shared";
 
+import { randRange } from "../utils";
 import { ProjectilesManger } from "./projectiles-manager";
 
 export class ShipManager {
@@ -7,10 +15,11 @@ export class ShipManager {
         id: string;
         name: string;
         shipGuid: ShipGuid;
-        x: number;
-        y: number;
+        map: GameMap;
     }): ShipEntity {
         const resource = GAME_SHIPS[params.shipGuid];
+        const { x, y } = this.getSpawnLocation(params.map);
+
         return {
             id: params.id,
             type: "Ship",
@@ -19,13 +28,12 @@ export class ShipManager {
             hp: resource.health,
             sp: resource.shield,
             radius: resource.radius,
-            x: params.x,
-            y: params.y,
+            x,
+            y,
             rot: 0,
             tRot: 0,
             vx: 0,
             vy: 0,
-            isDestroyed: false,
             respawnProgress: 0,
             inputs: [],
         };
@@ -33,9 +41,6 @@ export class ShipManager {
 
     static moveShips(dt: number, ships: ShipEntity[], projectiles: ProjectileEntity[]) {
         for (const ship of ships) {
-            if (ship.isDestroyed) {
-                continue;
-            }
             this.moveShip(dt, ship, projectiles);
         }
     }
@@ -105,11 +110,34 @@ export class ShipManager {
 
     static regenerateShields(ships: ShipEntity[]) {
         for (const ship of ships) {
-            if (ship.isDestroyed) {
-                continue;
-            }
             const resource = GAME_SHIPS[ship.resourceGuid];
             ship.sp = Math.min(resource.shield, ship.sp + resource.shieldRegeneration);
         }
+    }
+
+    static getSpawnLocation(map: GameMap) {
+        let x = 0;
+        let y = 0;
+
+        switch (getRandomElement(["top", "bottom", "left", "right"] as const)) {
+            case "top":
+                x = randRange(100, map.width - 100);
+                y = 100;
+                break;
+            case "bottom":
+                x = randRange(100, map.width - 100);
+                y = map.height - 100;
+                break;
+            case "left":
+                x = 100;
+                y = randRange(100, map.height - 100);
+                break;
+            case "right":
+                x = map.width - 100;
+                y = randRange(100, map.height - 100);
+                break;
+        }
+
+        return { x, y };
     }
 }

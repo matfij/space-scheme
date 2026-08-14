@@ -6,7 +6,6 @@ import {
     safeSerialize,
     ShipGuid,
     GameMap,
-    getRandomElement,
     gameConfig,
     GAME_SHIPS,
 } from "@space/shared";
@@ -24,6 +23,7 @@ export class GameManager {
     private slowLoopThreshold = 10 * gameConfig.dt;
 
     private ships: ShipEntity[] = [];
+    private destroyedShips: ShipEntity[] = [];
     private asteroids: AsteroidEntity[] = [];
     private projectiles: ProjectileEntity[] = [];
 
@@ -49,8 +49,7 @@ export class GameManager {
 
     addShip(id: string, name: string, shipGuid: ShipGuid) {
         if (!this.ships.find((ship) => ship.id === id)) {
-            const spawn = getRandomElement(this.map.spawnLocations);
-            const newShip = ShipManager.createShip({ id, name, shipGuid, x: spawn.x, y: spawn.y });
+            const newShip = ShipManager.createShip({ id, name, shipGuid, map: this.map });
             this.ships.push(newShip);
         }
     }
@@ -91,38 +90,48 @@ export class GameManager {
             (projectile) => projectile.traveled < projectile.travelLimit,
         );
 
-        for (const ship of this.ships) {
-            if (ship.isDestroyed || ship.hp > 0) {
+        const destroyedIndexes: number[] = [];
+        for (let i = 0; i < this.ships.length; i++) {
+            const ship = this.ships[i];
+            if (ship.hp > 0) {
                 continue;
             }
-            ship.isDestroyed = true;
+
             ship.vx = 0;
             ship.vx = 0;
             ship.tRot = 0;
             ship.respawnProgress = 0;
+            ship.inputs = [];
+
+            destroyedIndexes.push(i);
+            this.destroyedShips.push(ship);
         }
+        this.ships = this.ships.filter((_, i) => !destroyedIndexes.includes(i));
     }
 
     private checkRespawn(dt: number) {
-        for (const ship of this.ships) {
-            if (!ship.isDestroyed) {
-                continue;
-            }
+        const respawnedIndexes: number[] = [];
+        for (let i = 0; i < this.destroyedShips.length; i++) {
+            const ship = this.destroyedShips[i];
+
             if (ship.respawnProgress >= gameConfig.playerRespawnThreshold) {
-                ship.isDestroyed = false;
                 ship.respawnProgress = 0;
 
                 const resource = GAME_SHIPS[ship.resourceGuid];
                 ship.hp = resource.health;
                 ship.sp = resource.shield;
 
-                const spawn = getRandomElement(this.map.spawnLocations);
-                ship.x = spawn.x;
-                ship.y = spawn.y;
+                const { x, y } = ShipManager.getSpawnLocation(this.map);
+                ship.x = x;
+                ship.y = y;
+
+                respawnedIndexes.push(i);
+                this.ships.push(ship);
             } else {
                 ship.respawnProgress += dt;
             }
         }
+        this.destroyedShips = this.destroyedShips.filter((_, i) => !respawnedIndexes.includes(i));
     }
 
     serialize() {
