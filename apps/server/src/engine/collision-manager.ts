@@ -7,6 +7,7 @@ import {
     GAME_SHIPS,
     GameEntity,
     GameMap,
+    GameStatistics,
     ProjectileEntity,
     ShipEntity,
 } from "@space/shared";
@@ -21,7 +22,7 @@ export class CollisionManager {
 
     private static readonly RADIATION_DAMAGE_FACTOR = 0.1;
 
-    static checkCollisions(entities: GameEntity[]) {
+    static checkCollisions(entities: GameEntity[], leaderboard: GameStatistics["leaderboard"]) {
         const grid = new SpatialGrid();
 
         for (const entity of entities) {
@@ -36,13 +37,17 @@ export class CollisionManager {
                 }
                 const dxy = Math.hypot(a.x - b.x, a.y - b.y);
                 if (dxy < a.radius + b.radius) {
-                    this.resolveCollision(a, b);
+                    this.resolveCollision(a, b, leaderboard);
                 }
             }
         }
     }
 
-    static resolveCollision(a: GameEntity, b: GameEntity) {
+    static resolveCollision(
+        a: GameEntity,
+        b: GameEntity,
+        leaderboard: GameStatistics["leaderboard"],
+    ) {
         const key = [a.type, b.type].sort().join("-") as `${EntityKind}-${EntityKind}`;
 
         const aRes = GAME_RESOURCES[a.resourceGuid];
@@ -107,6 +112,10 @@ export class CollisionManager {
 
                 ast.hp -= this.SHIP_TO_ASTEROID_DMG_FACTOR * impactSpeed * shpRes.mass;
 
+                if (shp.hp <= 0) {
+                    leaderboard[shp.id].deaths++;
+                }
+
                 break;
             }
             case "Asteroid-Projectile": {
@@ -134,6 +143,15 @@ export class CollisionManager {
                     this.SHIP_TO_SHIP_DMG_FACTOR * impactSpeed * shpRes2.mass,
                 );
 
+                if (shp1.hp <= 0) {
+                    leaderboard[shp2.id].kills++;
+                    leaderboard[shp1.id].deaths++;
+                }
+                if (shp2.hp <= 0) {
+                    leaderboard[shp1.id].kills++;
+                    leaderboard[shp2.id].deaths++;
+                }
+
                 break;
             }
             case "Projectile-Ship": {
@@ -144,6 +162,11 @@ export class CollisionManager {
                 this.applyDamageWithShield(shp, prjRes.damage);
                 prj.traveled = prj.travelLimit;
 
+                if (shp.hp <= 0) {
+                    leaderboard[prj.shooterId].kills++;
+                    leaderboard[shp.id].deaths++;
+                }
+
                 break;
             }
 
@@ -153,7 +176,11 @@ export class CollisionManager {
         }
     }
 
-    static checkRadiation(entities: GameEntity[], map: GameMap) {
+    static checkRadiation(
+        entities: GameEntity[],
+        map: GameMap,
+        leaderboard: GameStatistics["leaderboard"],
+    ) {
         for (const entity of entities) {
             const dx = entity.x < 0 ? -entity.x : -map.width + entity.x;
             const dy = entity.y < 0 ? -entity.y : -map.height + entity.y;
@@ -163,6 +190,10 @@ export class CollisionManager {
 
             if (entity.type === "Asteroid" || entity.type === "Ship") {
                 entity.hp -= damage;
+            }
+
+            if (entity.type === "Ship" && entity.hp <= 0) {
+                leaderboard[entity.id].deaths++;
             }
         }
     }

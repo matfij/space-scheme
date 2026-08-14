@@ -1,6 +1,7 @@
-import type { ShipGuid } from "./resources";
+import type { GameStatistics, ShipGuid } from "./resources";
 
 export type GameState = {
+    statistics: GameStatistics;
     ships: {
         id: string;
         resourceGuid: string;

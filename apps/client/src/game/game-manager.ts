@@ -46,6 +46,8 @@ export class GameManger {
             }
             const state = safeParse<GameState>(message.data);
             this.renderer?.render(state);
+
+            useGameStore.getState().updateStatistics(state.statistics);
         };
     }
 

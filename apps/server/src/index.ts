@@ -31,11 +31,11 @@ app.register(async (appInstance) => {
         }
 
         players.set(playerId, socket);
-        gameManager.addShip(playerId, playerName, shipGuid);
+        gameManager.joinPlayer(playerId, playerName, shipGuid);
 
         socket.on("message", (raw) => {
             const message = safeParse<GameMessage>(raw);
-            gameManager.setInputs(message.playerId, message.inputs);
+            gameManager.setPlayerInputs(message.playerId, message.inputs);
         });
 
         socket.on("close", () => {

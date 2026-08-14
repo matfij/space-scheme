@@ -13,6 +13,11 @@ export type GameMap = {
     asteroids: { guid: AsteroidGuid; cooldown: number }[];
 };
 
+export type GameStatistics = {
+    time: number;
+    leaderboard: Record<string, { name: string; kills: number; deaths: number }>;
+};
+
 export type GameResource<T> = {
     guid: T;
     type: EntityKind;

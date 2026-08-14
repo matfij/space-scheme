@@ -8,6 +8,7 @@ import {
     GameMap,
     gameConfig,
     GAME_SHIPS,
+    GameStatistics,
 } from "@space/shared";
 
 import { AsteroidManager } from "./asteroid-manager";
@@ -29,6 +30,8 @@ export class GameManager {
 
     private asteroidSpawns: AsteroidSpawn[] = [];
 
+    private statistics: GameStatistics;
+
     constructor(map: GameMap) {
         this.map = map;
         this.asteroidSpawns = map.asteroids.map((asteroid) => ({
@@ -36,22 +39,27 @@ export class GameManager {
             threshold: asteroid.cooldown,
             progress: 0,
         }));
+        this.statistics = {
+            time: 0,
+            leaderboard: {},
+        };
     }
 
-    setInputs(id: string, inputs: string[]) {
+    joinPlayer(id: string, name: string, shipGuid: ShipGuid) {
+        if (!this.ships.find((ship) => ship.id === id)) {
+            const newShip = ShipManager.createShip({ id, name, shipGuid, map: this.map });
+            this.ships.push(newShip);
+            this.statistics.leaderboard[id] = { name, kills: 0, deaths: 0 };
+        }
+    }
+
+    setPlayerInputs(id: string, inputs: string[]) {
         this.ships.forEach((ship) => {
             if (ship.id === id) {
                 ship.inputs = inputs;
                 return;
             }
         });
-    }
-
-    addShip(id: string, name: string, shipGuid: ShipGuid) {
-        if (!this.ships.find((ship) => ship.id === id)) {
-            const newShip = ShipManager.createShip({ id, name, shipGuid, map: this.map });
-            this.ships.push(newShip);
-        }
     }
 
     update(dt: number) {
@@ -67,13 +75,20 @@ export class GameManager {
             map: this.map,
         });
 
-        CollisionManager.checkCollisions([...this.ships, ...this.asteroids, ...this.projectiles]);
+        CollisionManager.checkCollisions(
+            [...this.ships, ...this.asteroids, ...this.projectiles],
+            this.statistics.leaderboard,
+        );
 
         this.checkDestruction();
 
         this.slowLoopProgress += dt;
         if (this.slowLoopProgress >= this.slowLoopThreshold) {
-            CollisionManager.checkRadiation([...this.ships, ...this.asteroids], this.map);
+            CollisionManager.checkRadiation(
+                [...this.ships, ...this.asteroids],
+                this.map,
+                this.statistics.leaderboard,
+            );
 
             ShipManager.regenerateShields(this.ships);
 
@@ -136,6 +151,7 @@ export class GameManager {
 
     serialize() {
         const state: GameState = {
+            statistics: this.statistics,
             ships: this.ships.map((ship) => ({
                 id: ship.id,
                 resourceGuid: ship.resourceGuid,
