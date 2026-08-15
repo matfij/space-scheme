@@ -20,7 +20,7 @@ export const SMALL_BALL: AsteroidResource = {
 export const MED_BALL: AsteroidResource = {
     guid: "ast-med-ball",
     type: "Asteroid",
-    health: 2400,
+    health: 3400,
     radius: 35,
     mass: 550,
     maxSpeed: 100,

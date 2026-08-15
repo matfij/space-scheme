@@ -1,4 +1,4 @@
-import { GAME_SHIPS, genId, isUserNameValid, type ShipGuid } from "@space/shared";
+import { GAME_SHIPS, genId, isUsernameValid, type ShipGuid } from "@space/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -23,7 +23,7 @@ export const LobbyComponent = () => {
 
     const onJoin = () => {
         setUsernameError(undefined);
-        if (!isUserNameValid(playerName)) {
+        if (!isUsernameValid(playerName)) {
             setUsernameError(t("errors.username"));
             return;
         }

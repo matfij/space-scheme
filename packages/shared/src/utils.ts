@@ -10,8 +10,12 @@ export const safeParse = <T>(data: unknown) => {
 
 export const safeSerialize = (data: unknown) => JSON.stringify(data);
 
-export const isUserNameValid = (value?: string) => {
+export const isUsernameValid = (value?: string) => {
     return value !== undefined && value?.length && value.length >= 3 && value.length <= 12;
+};
+
+export const isGuidValid = (value?: string) => {
+    return value !== undefined && value?.length && value.length >= 4 && value.length <= 20;
 };
 
 export const genId = (length = 16) => {

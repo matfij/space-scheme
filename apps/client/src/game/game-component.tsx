@@ -16,7 +16,10 @@ export const GameComponent = () => {
         }
         const game = new GameManger();
         (async () => {
-            await game.initialize(containerRef.current as HTMLDivElement, "ws://localhost:3000/ws");
+            await game.initialize(
+                containerRef.current as HTMLDivElement,
+                import.meta.env.VITE_BASE_URL,
+            );
             if (disposed) {
                 game.destroy();
                 return;

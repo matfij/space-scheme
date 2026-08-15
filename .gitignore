@@ -1,1 +1,11 @@
 node_modules
+
+dist
+build
+
+logs
+
+notes.md
+
+.env
+.env.production

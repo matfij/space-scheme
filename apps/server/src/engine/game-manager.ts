@@ -53,6 +53,12 @@ export class GameManager {
         }
     }
 
+    removePlayer(id: string) {
+        this.ships = this.ships.filter((ship) => ship.id !== id);
+        this.destroyedShips = this.destroyedShips.filter((ship) => ship.id !== id);
+        delete this.statistics.leaderboard[id];
+    }
+
     setPlayerInputs(id: string, inputs: string[]) {
         this.ships.forEach((ship) => {
             if (ship.id === id) {
@@ -113,7 +119,7 @@ export class GameManager {
             }
 
             ship.vx = 0;
-            ship.vx = 0;
+            ship.vy = 0;
             ship.tRot = 0;
             ship.respawnProgress = 0;
             ship.inputs = [];
