@@ -112,7 +112,7 @@ app.register(async (appInstance) => {
     });
 });
 
-app.listen({ port: serverConfig.port }, (error) => {
+app.listen({ port: serverConfig.port, host: "127.0.0.1" }, (error) => {
     if (error) {
         app.log.error(error);
         process.exit(1);
