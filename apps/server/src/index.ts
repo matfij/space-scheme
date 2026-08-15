@@ -8,6 +8,7 @@ import {
     JoinMessage,
     MILKY_WAY,
     safeParse,
+    serverConfig,
 } from "@space/shared";
 import fastify from "fastify";
 
@@ -17,7 +18,7 @@ import { logFile } from "./utils";
 const app = fastify({
     logger: { file: logFile() },
 });
-app.register(websocket);
+app.register(websocket, { options: { maxPayload: serverConfig.maxMessageSize } });
 
 app.get("/health", async () => ({ status: "ok" }));
 
@@ -54,7 +55,7 @@ setInterval(() => {
         online.delete(socket);
         socket.ping();
     }
-}, gameConfig.inactiveThreshold);
+}, serverConfig.inactiveThreshold);
 
 app.register(async (appInstance) => {
     appInstance.get("/ws", { websocket: true }, (socket, request) => {
@@ -104,14 +105,14 @@ app.register(async (appInstance) => {
                 const timer = setTimeout(() => {
                     gameManager.removePlayer(playerId);
                     disconnectTimers.delete(playerId);
-                }, gameConfig.inactiveThreshold);
+                }, serverConfig.inactiveThreshold);
                 disconnectTimers.set(playerId, timer);
             }
         });
     });
 });
 
-app.listen({ port: gameConfig.serverPort }, (error) => {
+app.listen({ port: serverConfig.port }, (error) => {
     if (error) {
         app.log.error(error);
         process.exit(1);
