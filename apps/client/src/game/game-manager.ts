@@ -1,4 +1,5 @@
 import {
+    gameConfig,
     MILKY_WAY,
     safeParse,
     safeSerialize,
@@ -11,6 +12,7 @@ import { GameRenderer } from "./game-renderer";
 
 export class GameManger {
     private playerId = useGameStore.getState().playerId!;
+    private inputInterval?: ReturnType<typeof setInterval>;
 
     private isDestroyed = false;
     private hasClearedInput = false;
@@ -52,23 +54,26 @@ export class GameManger {
     }
 
     private setupInput() {
-        window.addEventListener("keydown", (event) => {
-            this.hasClearedInput = false;
-            this.keys.add(event.code);
-        });
+        window.addEventListener("keydown", this.onKeyDown);
+        window.addEventListener("keyup", this.onKeyUp);
 
-        window.addEventListener("keyup", (event) => {
-            this.hasClearedInput = false;
-            this.keys.delete(event.code);
-        });
-
-        setInterval(() => {
+        this.inputInterval = setInterval(() => {
             if (this.keys.size > 0 || !this.hasClearedInput) {
                 this.sendInput();
                 this.hasClearedInput = true;
             }
-        }, 1000 / 30);
+        }, gameConfig.dt);
     }
+
+    private onKeyDown = (event: KeyboardEvent) => {
+        this.hasClearedInput = false;
+        this.keys.add(event.code);
+    };
+
+    private onKeyUp = (event: KeyboardEvent) => {
+        this.hasClearedInput = false;
+        this.keys.delete(event.code);
+    };
 
     private sendInput() {
         if (this.ws?.readyState === WebSocket.OPEN) {
@@ -78,6 +83,10 @@ export class GameManger {
 
     destroy() {
         this.isDestroyed = true;
+
+        clearInterval(this.inputInterval);
+        window.removeEventListener("keydown", this.onKeyDown);
+        window.removeEventListener("keyup", this.onKeyUp);
 
         this.ws?.close();
         this.ws = undefined;
