@@ -1,0 +1,28 @@
+# basic update
+apt update
+apt install -y curl
+
+# setup nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+source ~/.bashrc
+nvm install 24
+nvm alias default 24
+
+# enable pnpm
+corepack enable
+
+# install dependencies
+pnpm install
+
+# create logs directory
+mkdir apps/server/logs
+
+# setup nginx
+apt install -y nginx
+cp apps/server/nginx.conf /etc/nginx/sites-available/space-scheme
+ln -s /etc/nginx/sites-available/space-scheme /etc/nginx/sites-enabled/space-scheme
+systemctl reload nginx
+
+# setup certbot
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d server.space-scheme.online

@@ -19,7 +19,13 @@ const colors = {
     shieldBarHigh: "#469cd2",
 };
 
+type Snapshot = {
+    state: GameState;
+    time: number;
+};
+
 export class GameRenderer {
+    private interpolationDelay = 200;
     private readonly CAMERA_SMOOTHING = 0.12;
 
     private playerId = useGameStore.getState().playerId;
@@ -29,6 +35,8 @@ export class GameRenderer {
 
     private app = new Application();
     private mapLayer = new Container();
+
+    private snapshots: Snapshot[] = [];
 
     private grid = new Graphics();
     private background = new Sprite();
@@ -64,15 +72,95 @@ export class GameRenderer {
             return;
         }
 
+        this.app.ticker.add(this.renderFrame);
+
         this.isInitialized = true;
     }
 
-    render(state: GameState) {
+    syncState(state: GameState) {
         if (!this.isInitialized || this.isDestroyed) {
             return;
         }
 
-        const playerShip = state.ships.find((ship) => ship.id === this.playerId);
+        this.snapshots.push({
+            state,
+            time: performance.now(),
+        });
+
+        if (this.snapshots.length > 5) {
+            this.snapshots.shift();
+        }
+    }
+
+    private renderFrame = () => {
+        if (this.snapshots.length < 2) {
+            return;
+        }
+
+        const renderTime = performance.now() - this.interpolationDelay;
+
+        let previous = this.snapshots[0];
+        let current = this.snapshots[1];
+
+        for (let i = 1; i < this.snapshots.length; i++) {
+            if (this.snapshots[i].time >= renderTime) {
+                current = this.snapshots[i];
+                previous = this.snapshots[i - 1];
+                break;
+            }
+        }
+
+        const duration = current.time - previous.time;
+
+        const t = duration > 0 ? (renderTime - previous.time) / duration : 1;
+
+        this.renderInterpolated(previous.state, current.state, Math.max(0, Math.min(1, t)));
+    };
+
+    private renderInterpolated(previous: GameState, current: GameState, t: number) {
+        const ships = current.ships.map((currentShip) => {
+            const previousShip = previous.ships.find((ship) => ship.id === currentShip.id);
+            if (!previousShip) {
+                return currentShip;
+            }
+            return {
+                ...currentShip,
+                x: this.lerp(previousShip.x, currentShip.x, t),
+                y: this.lerp(previousShip.y, currentShip.y, t),
+                rot: this.lerpAngle(previousShip.rot, currentShip.rot, t),
+            };
+        });
+
+        const asteroids = current.asteroids.map((currAsteroid) => {
+            const prevAsteroid = previous.asteroids.find(
+                (asteroid) => asteroid.id === currAsteroid.id,
+            );
+            if (!prevAsteroid) {
+                return currAsteroid;
+            }
+            return {
+                ...currAsteroid,
+                x: this.lerp(prevAsteroid.x, currAsteroid.x, t),
+                y: this.lerp(prevAsteroid.y, currAsteroid.y, t),
+            };
+        });
+
+        const projectiles = current.projectiles.map((currentShip) => {
+            const previousShip = previous.projectiles.find(
+                (projectile) => projectile.id === currentShip.id,
+            );
+            if (!previousShip) {
+                return currentShip;
+            }
+            return {
+                ...currentShip,
+                x: this.lerp(previousShip.x, currentShip.x, t),
+                y: this.lerp(previousShip.y, currentShip.y, t),
+                rot: this.lerpAngle(previousShip.rot, currentShip.rot, t),
+            };
+        });
+
+        const playerShip = ships.find((ship) => ship.id === this.playerId);
         if (playerShip) {
             const targetX = this.app.screen.width / 2 - playerShip.x;
             const targetY = this.app.screen.height / 2 - playerShip.y;
@@ -86,13 +174,13 @@ export class GameRenderer {
             Math.round(this.cameraY) - this.cameraY,
         );
 
-        this.syncEntities(state.ships, this.shipGraphics, (ship) => this.renderEntity(ship));
+        this.syncEntities(ships, this.shipGraphics, (ship) => this.renderEntity(ship));
 
-        this.syncEntities(state.asteroids, this.asteroidGraphics, (asteroid) =>
+        this.syncEntities(asteroids, this.asteroidGraphics, (asteroid) =>
             this.renderEntity(asteroid),
         );
 
-        this.syncEntities(state.projectiles, this.projectileGraphics, (projectile) =>
+        this.syncEntities(projectiles, this.projectileGraphics, (projectile) =>
             this.renderEntity(projectile, true),
         );
     }
@@ -242,6 +330,24 @@ export class GameRenderer {
         this.background.width = map.width;
         this.background.height = map.height;
         this.background.tint = 0x777777;
+    }
+
+    private lerp(a: number, b: number, t: number) {
+        return a + (b - a) * t;
+    }
+
+    private lerpAngle(a: number, b: number, t: number) {
+        const twoPi = Math.PI * 2;
+
+        let delta = (b - a) % twoPi;
+
+        if (delta > Math.PI) {
+            delta -= twoPi;
+        } else if (delta < -Math.PI) {
+            delta += twoPi;
+        }
+
+        return a + delta * t;
     }
 
     destroy() {
