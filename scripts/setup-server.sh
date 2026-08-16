@@ -14,15 +14,27 @@ corepack enable
 # install dependencies
 pnpm install
 
+# build app
+pnpm build
+
 # create logs directory
 mkdir apps/server/logs
 
+# copy web ui to serve folder
+sudo mkdir -p /var/www/space-scheme
+sudo cp -r apps/client/dist/* /var/www/space-scheme/
+sudo chown -R www-data:www-data /var/www/space-scheme
+
+# updating web ui code
+sudo rm -rf /var/www/space-scheme/*
+sudo cp -r apps/client/dist/* /var/www/space-scheme/
+
 # setup nginx
 apt install -y nginx
-cp apps/server/nginx.conf /etc/nginx/sites-available/space-scheme
+cp scripts/nginx.conf /etc/nginx/sites-available/space-scheme
 ln -s /etc/nginx/sites-available/space-scheme /etc/nginx/sites-enabled/space-scheme
 systemctl reload nginx
 
 # setup certbot
 sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d server.space-scheme.online
+sudo certbot --nginx -d server.space-scheme.online -d space-scheme.online -d www.space-scheme.online
