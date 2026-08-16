@@ -3,7 +3,6 @@ import {
     ShipEntity,
     ProjectileEntity,
     GameState,
-    safeSerialize,
     ShipGuid,
     GameMap,
     gameConfig,
@@ -155,9 +154,8 @@ export class GameManager {
         this.destroyedShips = this.destroyedShips.filter((_, i) => !respawnedIndexes.includes(i));
     }
 
-    serialize() {
+    getState() {
         const state: GameState = {
-            statistics: this.statistics,
             ships: this.ships.map((ship) => ({
                 id: ship.id,
                 resourceGuid: ship.resourceGuid,
@@ -184,6 +182,10 @@ export class GameManager {
             })),
         };
 
-        return safeSerialize(state);
+        return state;
+    }
+
+    getStatistics() {
+        return this.statistics;
     }
 }

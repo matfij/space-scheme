@@ -5,6 +5,7 @@ export const gameConfig = {
 
 export const serverConfig = {
     port: 3000,
+    host: "127.0.0.1",
     maxMessageSize: 2 * 1024, // 2 Kib,
     inactiveThreshold: 15_000, // ms inactivity threshold before disconnect
 };

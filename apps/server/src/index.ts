@@ -2,13 +2,14 @@ import websocket, { type WebSocket } from "@fastify/websocket";
 import {
     GAME_SHIPS,
     gameConfig,
-    GameMessage,
     isGuidValid,
     isUsernameValid,
-    JoinMessage,
+    JointInput,
     MILKY_WAY,
     safeParse,
+    safeSerialize,
     serverConfig,
+    GameMessage,
 } from "@space/shared";
 import fastify from "fastify";
 
@@ -20,7 +21,7 @@ const app = fastify({
 });
 app.register(websocket, { options: { maxPayload: serverConfig.maxMessageSize } });
 
-app.get("/health", async () => ({ status: "ok" }));
+app.get("/health", async () => ({ ok: true }));
 
 const players = new Map();
 const online = new WeakSet<WebSocket>();
@@ -31,17 +32,28 @@ const gameManager = new GameManager(MILKY_WAY);
 // game state broadcast
 setInterval(() => {
     try {
-        gameManager.update(gameConfig.dt);
+        if (players.size > 0) {
+            gameManager.update(gameConfig.dt);
+        }
     } catch (err) {
         app.log.error(`Game update error: ${err}`);
         return;
     }
     for (const socket of players.values()) {
         if (socket.readyState === socket.OPEN) {
-            socket.send(gameManager.serialize());
+            socket.send(safeSerialize({ type: "state", data: gameManager.getState() }));
         }
     }
-}, 50);
+}, 1000 * gameConfig.dt);
+
+// game statistics broadcast
+setInterval(() => {
+    for (const socket of players.values()) {
+        if (socket.readyState === socket.OPEN) {
+            socket.send(safeSerialize({ type: "statistics", data: gameManager.getStatistics() }));
+        }
+    }
+}, 10_000 * gameConfig.dt);
 
 // disconnect inactive players
 setInterval(() => {
@@ -60,7 +72,7 @@ setInterval(() => {
 app.register(async (appInstance) => {
     appInstance.get("/ws", { websocket: true }, (socket, request) => {
         // initial join
-        const { playerId, shipGuid, playerName } = request.query as JoinMessage;
+        const { playerId, shipGuid, playerName } = request.query as JointInput;
 
         if (!isGuidValid(playerId) || !isUsernameValid(playerName) || !GAME_SHIPS[shipGuid]) {
             app.log.warn(`Invalid join params: ${playerId}, ${playerName}, ${shipGuid}`);
@@ -92,7 +104,9 @@ app.register(async (appInstance) => {
         socket.on("message", (raw) => {
             try {
                 const message = safeParse<GameMessage>(raw);
-                gameManager.setPlayerInputs(playerId, message.inputs);
+                if (message.type === "control") {
+                    gameManager.setPlayerInputs(playerId, message.data.inputs);
+                }
             } catch (err) {
                 app.log.warn(`Game message error: ${err}`);
             }
@@ -112,7 +126,7 @@ app.register(async (appInstance) => {
     });
 });
 
-app.listen({ port: serverConfig.port, host: "127.0.0.1" }, (error) => {
+app.listen({ port: serverConfig.port, host: serverConfig.host }, (error) => {
     if (error) {
         app.log.error(error);
         process.exit(1);

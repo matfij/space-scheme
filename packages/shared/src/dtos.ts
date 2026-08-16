@@ -1,7 +1,39 @@
-import type { GameStatistics, ShipGuid } from "./resources";
+import type { ShipGuid } from "./resources";
+
+export type JoinMessage = {
+    type: "join";
+    data: JointInput;
+};
+
+export type ControlMessage = {
+    type: "control";
+    data: ControlInput;
+};
+
+export type StateMessage = {
+    type: "state";
+    data: GameState;
+};
+
+export type StatisticsMessage = {
+    type: "statistics";
+    data: GameStatistics;
+};
+
+export type GameMessage = JoinMessage | ControlMessage | StateMessage | StatisticsMessage;
+
+export type JointInput = {
+    playerId: string;
+    playerName: string;
+    shipGuid: ShipGuid;
+};
+
+export type ControlInput = {
+    playerId: string;
+    inputs: string[];
+};
 
 export type GameState = {
-    statistics: GameStatistics;
     ships: {
         id: string;
         resourceGuid: string;
@@ -16,13 +48,7 @@ export type GameState = {
     projectiles: { id: string; resourceGuid: string; x: number; y: number; rot: number }[];
 };
 
-export type JoinMessage = {
-    playerId: string;
-    playerName: string;
-    shipGuid: ShipGuid;
-};
-
-export type GameMessage = {
-    playerId: string;
-    inputs: string[];
+export type GameStatistics = {
+    time: number;
+    leaderboard: Record<string, { name: string; kills: number; deaths: number }>;
 };

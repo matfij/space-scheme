@@ -3,8 +3,8 @@ import {
     MILKY_WAY,
     safeParse,
     safeSerialize,
-    type GameState,
-    type JoinMessage,
+    type GameMessage,
+    type JointInput,
 } from "@space/shared";
 
 import { useGameStore } from "../common/game-store";
@@ -35,21 +35,28 @@ export class GameManger {
 
     private connectWs(url: string) {
         const gameState = useGameStore.getState();
-        const params: JoinMessage = {
+        const params: JointInput = {
             playerId: gameState.playerId!,
             playerName: gameState.playerName!,
             shipGuid: gameState.shipGuid!,
         };
         const query = new URLSearchParams(params).toString();
         this.ws = new WebSocket(`${url}?${query}`);
-        this.ws.onmessage = (message: MessageEvent<string>) => {
+        this.ws.onmessage = (rawMessage: MessageEvent<string>) => {
             if (this.isDestroyed) {
                 return;
             }
-            const state = safeParse<GameState>(message.data);
-            this.renderer?.render(state);
-
-            useGameStore.getState().updateStatistics(state.statistics);
+            const message = safeParse<GameMessage>(rawMessage.data);
+            switch (message.type) {
+                case "state": {
+                    this.renderer?.render(message.data);
+                    break;
+                }
+                case "statistics": {
+                    useGameStore.getState().updateStatistics(message.data);
+                    break;
+                }
+            }
         };
     }
 
@@ -77,7 +84,12 @@ export class GameManger {
 
     private sendInput() {
         if (this.ws?.readyState === WebSocket.OPEN) {
-            this.ws.send(safeSerialize({ playerId: this.playerId, inputs: Array.from(this.keys) }));
+            this.ws.send(
+                safeSerialize({
+                    type: "control",
+                    data: { playerId: this.playerId, inputs: Array.from(this.keys) },
+                }),
+            );
         }
     }
 

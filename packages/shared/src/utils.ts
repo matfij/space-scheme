@@ -1,3 +1,5 @@
+import type { GameMessage } from "./dtos";
+
 export const safeParse = <T>(data: unknown) => {
     if (typeof data === "string") {
         return JSON.parse(data) as T;
@@ -8,7 +10,7 @@ export const safeParse = <T>(data: unknown) => {
     }
 };
 
-export const safeSerialize = (data: unknown) => JSON.stringify(data);
+export const safeSerialize = (data: GameMessage) => JSON.stringify(data);
 
 export const isUsernameValid = (value?: string) => {
     return value !== undefined && value?.length && value.length >= 3 && value.length <= 12;

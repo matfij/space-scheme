@@ -48,6 +48,10 @@ export class CollisionManager {
         b: GameEntity,
         leaderboard: GameStatistics["leaderboard"],
     ) {
+        if (("hp" in a && a.hp <= 0) || ("hp" in b && b.hp <= 0)) {
+            return;
+        }
+
         const key = [a.type, b.type].sort().join("-") as `${EntityKind}-${EntityKind}`;
 
         const aRes = GAME_RESOURCES[a.resourceGuid];
