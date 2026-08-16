@@ -1,7 +1,87 @@
 @use "../common//variables.scss" as *;
 
+.gameWrapper {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
 .statisticsWrapper {
     position: fixed;
-    top: 0;
-    left: calc(50%);
+    top: 5%;
+    left: calc(50% - 16rem);
+    width: 32rem;
+    padding: $spacing-2;
+    border-radius: $spacing-2;
+    border: 1px solid rgba($color-primary-200, 0.2);
+    background: rgba($color-dark-400, 0.5);
+}
+
+.statisticsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: $spacing-px $spacing-1 $spacing-1 $spacing-1;
+
+    p {
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
+.statisticsTable {
+    width: 100%;
+
+    th {
+        background: rgba($color-light-400, 0.2);
+        color: $color-primary-500;
+        padding: $spacing-1;
+        border-radius: $spacing-1;
+    }
+
+    tr {
+        padding: $spacing-1;
+        text-align: center;
+    }
+}
+
+.nameColumn {
+    padding-left: $spacing-2 !important;
+    text-align: left;
+}
+
+.statisticsCloseButton {
+    opacity: 0.9;
+
+    &:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    img {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+.statisticsOpenButton {
+    position: fixed;
+    top: 2%;
+    left: 2%;
+    border-radius: $spacing-2;
+    border: 1px solid rgba($color-primary-200, 0.2);
+    background: rgba($color-dark-400, 0.5);
+    padding: $spacing-2;
+    opacity: 0.9;
+
+    &:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    img {
+        width: 2rem;
+        height: 2rem;
+    }
 }

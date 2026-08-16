@@ -1,12 +1,11 @@
 import { useEffect, useRef } from "react";
 
-import { useGameStore } from "../common/game-store";
 import { GameManger } from "./game-manager";
+import { StatisticsComponent } from "./statistics-component";
 
 import styles from "./game-component.module.scss";
 
 export const GameComponent = () => {
-    const { statistics } = useGameStore();
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -34,20 +33,8 @@ export const GameComponent = () => {
 
     return (
         <>
-            <div className={styles.statisticsWrapper}>
-                <p>Statistics</p>
-                <p>Time: {statistics.time}</p>
-                <hr />
-                {Object.values(statistics.leaderboard).map((leader) => (
-                    <p key={leader.name}>
-                        {leader.name} | {leader.kills} | {leader.deaths}
-                    </p>
-                ))}
-            </div>
-            <div
-                ref={containerRef}
-                style={{ width: "100vw", height: "100vh", overflow: "hidden" }}
-            />
+            <StatisticsComponent />
+            <div ref={containerRef} className={styles.gameWrapper} />
         </>
     );
 };

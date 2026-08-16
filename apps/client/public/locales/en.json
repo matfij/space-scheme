@@ -16,6 +16,14 @@
         "speed": "Speed",
         "acceleration": "Acceleration"
     },
+    "statistics": {
+        "ranking": "Ranking",
+        "place": "#",
+        "player": "Player",
+        "kills": "Kills",
+        "deaths": "Deaths",
+        "score": "Score"
+    },
     "errors": {
         "username": "Username must be between 3 and 12 characters"
     }
