@@ -24,6 +24,15 @@
         "deaths": "Deaths",
         "score": "Score"
     },
+    "tutorial": {
+        "controls": "Controls",
+        "movement": "Movement:",
+        "movementKeys": "W, S, A, D",
+        "shooting": "Shooting:",
+        "shootingKey": "O",
+        "ability": "Ability:",
+        "abilityKey": "P"
+    },
     "errors": {
         "username": "Username must be between 3 and 12 characters"
     }

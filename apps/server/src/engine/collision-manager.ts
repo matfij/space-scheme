@@ -16,9 +16,9 @@ import { SpatialGrid } from "./spatial-grid";
 
 export class CollisionManager {
     private static readonly RESTITUTION = 0.8;
-    private static readonly ASTEROID_TO_SHIP_DMG_FACTOR = 0.02;
-    private static readonly SHIP_TO_SHIP_DMG_FACTOR = 0.06;
-    private static readonly SHIP_TO_ASTEROID_DMG_FACTOR = 0.08;
+    private static readonly ASTEROID_TO_SHIP_DMG_FACTOR = 0.01;
+    private static readonly SHIP_TO_SHIP_DMG_FACTOR = 0.04;
+    private static readonly SHIP_TO_ASTEROID_DMG_FACTOR = 0.02;
 
     private static readonly RADIATION_DAMAGE_FACTOR = 0.1;
 

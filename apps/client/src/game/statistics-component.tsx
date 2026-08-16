@@ -30,12 +30,12 @@ export const StatisticsComponent = () => {
     return (
         <>
             {showStatistics && (
-                <div className={styles.statisticsWrapper}>
-                    <div className={styles.statisticsHeader}>
+                <div className={styles.dialogWrapper}>
+                    <div className={styles.dialogHeader}>
                         <p>{t("statistics.ranking")}</p>
                         <div
                             onClick={() => setShowStatistics(false)}
-                            className={styles.statisticsCloseButton}
+                            className={styles.dialogCloseButton}
                         >
                             <img src="icons/contract.svg" />
                         </div>
@@ -65,7 +65,8 @@ export const StatisticsComponent = () => {
             {!showStatistics && (
                 <div
                     onClick={() => setShowStatistics(true)}
-                    className={styles.statisticsOpenButton}
+                    className={styles.dialogOpenButton}
+                    style={{ top: "calc(2%)" }}
                 >
                     <img src="icons/ranking.svg" />
                 </div>

@@ -10,5 +10,7 @@ export const MILKY_WAY: GameMap = {
     asteroids: [
         { guid: "ast-small-ball", cooldown: 3 },
         { guid: "ast-med-ball", cooldown: 9 },
+        { guid: "ast-large-ball", cooldown: 27 },
+        { guid: "ast-super-ball", cooldown: 100 },
     ],
 };

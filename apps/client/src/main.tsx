@@ -3,10 +3,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./common/i18n";
-import { App } from "./app";
+import { AppComponent } from "./app";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <App />
+        <AppComponent />
     </StrictMode>,
 );

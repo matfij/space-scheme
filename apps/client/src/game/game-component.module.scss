@@ -6,18 +6,18 @@
     overflow: hidden;
 }
 
-.statisticsWrapper {
+.dialogWrapper {
     position: fixed;
     top: 5%;
     left: calc(50% - 16rem);
     width: 32rem;
     padding: $spacing-2;
-    border-radius: $spacing-2;
+    border-radius: $radius-md;
     border: 1px solid rgba($color-primary-200, 0.2);
     background: rgba($color-dark-400, 0.5);
 }
 
-.statisticsHeader {
+.dialogHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -30,28 +30,7 @@
     }
 }
 
-.statisticsTable {
-    width: 100%;
-
-    th {
-        background: rgba($color-light-400, 0.2);
-        color: $color-primary-500;
-        padding: $spacing-1;
-        border-radius: $spacing-1;
-    }
-
-    tr {
-        padding: $spacing-1;
-        text-align: center;
-    }
-}
-
-.nameColumn {
-    padding-left: $spacing-2 !important;
-    text-align: left;
-}
-
-.statisticsCloseButton {
+.dialogCloseButton {
     opacity: 0.9;
 
     &:hover {
@@ -65,11 +44,10 @@
     }
 }
 
-.statisticsOpenButton {
+.dialogOpenButton {
     position: fixed;
-    top: 2%;
-    left: 2%;
-    border-radius: $spacing-2;
+    left: 1%;
+    border-radius: $radius-md;
     border: 1px solid rgba($color-primary-200, 0.2);
     background: rgba($color-dark-400, 0.5);
     padding: $spacing-2;
@@ -83,5 +61,51 @@
     img {
         width: 2rem;
         height: 2rem;
+    }
+}
+
+.statisticsTable {
+    width: 100%;
+
+    .nameColumn {
+        padding-left: $spacing-2;
+        text-align: left;
+    }
+
+    th {
+        background: rgba($color-light-400, 0.2);
+        color: $color-primary-500;
+        padding: $spacing-1;
+        border-radius: $radius-sm;
+    }
+
+    tr {
+        padding: $spacing-1;
+        text-align: center;
+    }
+}
+
+.tutorialRowsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+    padding: $spacing-1;
+}
+
+.tutorialRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    opacity: 0.85;
+
+    b {
+        margin-left: $spacing-2;
+        padding: 2px $spacing-1;
+        font-size: 16px;
+        border-radius: $radius-md;
+        background: rgba($color-primary-400, 0.15);
+        color: $color-primary-400;
+        letter-spacing: 1px;
     }
 }

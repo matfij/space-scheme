@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 
 import { GameManger } from "./game-manager";
 import { StatisticsComponent } from "./statistics-component";
+import { TutorialComponent } from "./tutorial-component";
 
 import styles from "./game-component.module.scss";
 
@@ -34,6 +35,7 @@ export const GameComponent = () => {
     return (
         <>
             <StatisticsComponent />
+            <TutorialComponent />
             <div ref={containerRef} className={styles.gameWrapper} />
         </>
     );

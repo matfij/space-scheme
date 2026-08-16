@@ -4,7 +4,7 @@ import { routes } from "./common/config";
 import { GameComponent } from "./game/game-component";
 import { LobbyComponent } from "./lobby/lobby-component";
 
-export const App = () => {
+export const AppComponent = () => {
     return (
         <BrowserRouter>
             <Routes>
