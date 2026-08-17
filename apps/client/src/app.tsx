@@ -1,0 +1,17 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+
+import { routes } from "./common/config";
+import { GameComponent } from "./game/game-component";
+import { LobbyComponent } from "./lobby/lobby-component";
+
+export const AppComponent = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path={routes.root} element={<LobbyComponent />} />
+                <Route path={routes.game} element={<GameComponent />} />
+                <Route path="*" element={<Navigate to={routes.root} replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
+};
