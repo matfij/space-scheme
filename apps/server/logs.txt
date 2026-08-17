@@ -1,4 +1,0 @@
-{"level":30,"time":1786795883566,"pid":23152,"hostname":"MSI","msg":"Server listening at http://[::1]:3000"}
-{"level":30,"time":1786795883568,"pid":23152,"hostname":"MSI","msg":"Server listening at http://127.0.0.1:3000"}
-{"level":30,"time":1786795928910,"pid":11340,"hostname":"MSI","msg":"Server listening at http://[::1]:3000"}
-{"level":30,"time":1786795928912,"pid":11340,"hostname":"MSI","msg":"Server listening at http://127.0.0.1:3000"}

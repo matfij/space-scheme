@@ -10,6 +10,8 @@ import { genId, randRange } from "../utils";
 import { AsteroidSpawn } from "./types";
 
 export class AsteroidManager {
+    private static readonly SPAWN_EDGE_OFFSET = 100;
+
     static spawnAsteroids(params: {
         dt: number;
         asteroids: AsteroidEntity[];
@@ -25,7 +27,9 @@ export class AsteroidManager {
 
             spawn.progress = 0;
 
-            const { x, y } = this.getSpawnLocation(params.map);
+            const resource = GAME_ASTEROIDS[spawn.guid];
+
+            const { x, y } = this.getSpawnLocation(params.map, resource.radius);
 
             const rot = Math.atan2(
                 randRange(0, params.map.height) - y,
@@ -77,26 +81,27 @@ export class AsteroidManager {
         asteroid.y += dt * asteroid.vy;
     }
 
-    private static getSpawnLocation(map: GameMap) {
+    private static getSpawnLocation(map: GameMap, radius: number) {
         let x = 0;
         let y = 0;
+        const offset = radius + this.SPAWN_EDGE_OFFSET;
 
         switch (getRandomElement(["top", "bottom", "left", "right"] as const)) {
             case "top":
-                x = randRange(100, map.width - 100);
-                y = -200;
+                x = randRange(this.SPAWN_EDGE_OFFSET, map.width - this.SPAWN_EDGE_OFFSET);
+                y = -offset;
                 break;
             case "bottom":
-                x = randRange(100, map.width - 100);
-                y = map.height + 200;
+                x = randRange(this.SPAWN_EDGE_OFFSET, map.width - this.SPAWN_EDGE_OFFSET);
+                y = map.height + offset;
                 break;
             case "left":
-                x = -200;
-                y = randRange(100, map.height - 100);
+                x = -offset;
+                y = randRange(this.SPAWN_EDGE_OFFSET, map.height - this.SPAWN_EDGE_OFFSET);
                 break;
             case "right":
-                x = map.width + 200;
-                y = randRange(100, map.height - 100);
+                x = map.width + offset;
+                y = randRange(this.SPAWN_EDGE_OFFSET, map.height - this.SPAWN_EDGE_OFFSET);
                 break;
         }
 

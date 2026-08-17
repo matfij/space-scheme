@@ -6,7 +6,7 @@ export const MILKY_WAY: GameMap = {
     imageUri: "/images/maps/milky-way.png",
     gridSize: 400,
     width: 8000,
-    height: 3200,
+    height: 4400,
     asteroids: [
         { guid: "ast-small-ball", cooldown: 3 },
         { guid: "ast-med-ball", cooldown: 9 },

@@ -31,7 +31,20 @@ export class EntityRenderer {
     private static renderSprite(sprite: GameResource<ResourceGuid>["sprite"]) {
         switch (sprite.type) {
             case "Circle":
-                return new Graphics().circle(0, 0, sprite.radius).fill(sprite.color);
+                const g = new Graphics();
+
+                g.circle(0, 0, sprite.radius).fill(sprite.color);
+                g.circle(0, 0, sprite.radius * 0.92).fill("rgba(0,0,0,0.08)");
+                g.circle(0, 0, sprite.radius).stroke({ color: "rgba(255,255,255,0.2)", width: 2 });
+
+                for (let i = 0; i < 6; i++) {
+                    const x = (Math.random() - 0.5) * sprite.radius * 1.2;
+                    const y = (Math.random() - 0.5) * sprite.radius * 1.2;
+                    g.moveTo(x, y);
+                    g.lineTo(x + 8, y + 3);
+                    g.stroke({ color: "rgba(0,0,0,0.18)", width: 2 });
+                }
+                return g;
             case "Polygon":
                 const graphic = new Graphics().moveTo(
                     sprite.coordinates[0][0],
