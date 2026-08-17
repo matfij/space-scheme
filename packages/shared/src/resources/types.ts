@@ -1,4 +1,5 @@
 import type { EntityKind } from "../entities";
+import type { AlienGuid } from "./aliens";
 import type { AsteroidGuid } from "./asteroids";
 import type { ProjectileGuid } from "./projectiles";
 import type { ShipGuid } from "./ships";
@@ -11,6 +12,7 @@ export type GameMap = {
     width: number;
     height: number;
     asteroids: { guid: AsteroidGuid; cooldown: number }[];
+    aliens: { guid: AlienGuid; limit: number }[];
 };
 
 export type GameResource<T> = {
@@ -38,6 +40,7 @@ export type GameResource<T> = {
       }
     | {
           type: "Alien";
+          name: string;
           health: number;
           shield: number;
           shieldRegeneration: number;
@@ -63,7 +66,7 @@ export type GameResource<T> = {
 
 export type ShipResource = Extract<GameResource<ShipGuid>, { type: "Ship" }>;
 
-export type AlienResource = Extract<GameResource<string>, { type: "Alien" }>;
+export type AlienResource = Extract<GameResource<AlienGuid>, { type: "Alien" }>;
 
 export type AsteroidResource = Extract<GameResource<AsteroidGuid>, { type: "Asteroid" }>;
 

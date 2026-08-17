@@ -1,9 +1,11 @@
+import type { ResourceGuid } from "./resources";
+
 export type EntityKind = "Ship" | "Alien" | "Asteroid" | "Projectile";
 
 export type BaseEntity<T extends EntityKind> = {
     type: T;
     id: string;
-    resourceGuid: string;
+    resourceGuid: ResourceGuid;
     radius: number;
     x: number;
     y: number;
@@ -22,9 +24,12 @@ export type ShipEntity = BaseEntity<"Ship"> & {
 };
 
 export type AlienEntity = BaseEntity<"Alien"> & {
+    name: string;
     hp: number;
     sp: number;
     rot: number;
+    tRot: number;
+    target: { id?: string; x: number; y: number };
 };
 
 export type ProjectileEntity = BaseEntity<"Projectile"> & {
@@ -38,4 +43,4 @@ export type AsteroidEntity = BaseEntity<"Asteroid"> & {
     hp: number;
 };
 
-export type GameEntity = ShipEntity | AsteroidEntity | ProjectileEntity;
+export type GameEntity = ShipEntity | AlienEntity | AsteroidEntity | ProjectileEntity;

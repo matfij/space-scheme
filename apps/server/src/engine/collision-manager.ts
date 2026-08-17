@@ -1,6 +1,8 @@
 import {
+    AlienEntity,
     AsteroidEntity,
     EntityKind,
+    GAME_ALIENS,
     GAME_ASTEROIDS,
     GAME_PROJECTILES,
     GAME_RESOURCES,
@@ -48,6 +50,13 @@ export class CollisionManager {
         b: GameEntity,
         leaderboard: GameStatistics["leaderboard"],
     ) {
+        if (
+            (a.type === "Projectile" && a.shooterId === b.id) ||
+            (b.type === "Projectile" && b.shooterId === a.id)
+        ) {
+            return;
+        }
+
         if (("hp" in a && a.hp <= 0) || ("hp" in b && b.hp <= 0)) {
             return;
         }
@@ -122,6 +131,21 @@ export class CollisionManager {
 
                 break;
             }
+            case "Alien-Asteroid": {
+                const aln = (a.type === "Alien" ? a : b) as AlienEntity;
+                const alnRes = GAME_ALIENS[aln.resourceGuid];
+                const ast = (a.type === "Asteroid" ? a : b) as AsteroidEntity;
+                const astRes = GAME_ASTEROIDS[ast.resourceGuid];
+
+                this.applyDamageWithShield(
+                    aln,
+                    this.ASTEROID_TO_SHIP_DMG_FACTOR * impactSpeed * astRes.mass,
+                );
+
+                ast.hp -= this.SHIP_TO_ASTEROID_DMG_FACTOR * impactSpeed * alnRes.mass;
+
+                break;
+            }
             case "Asteroid-Projectile": {
                 const ast = (a.type === "Asteroid" ? a : b) as AsteroidEntity;
                 const prj = (a.type === "Projectile" ? a : b) as ProjectileEntity;
@@ -129,6 +153,27 @@ export class CollisionManager {
 
                 ast.hp -= prjRes.damage;
                 prj.traveled = prj.travelLimit;
+
+                break;
+            }
+            case "Alien-Ship": {
+                const aln = (a.type === "Alien" ? a : b) as AlienEntity;
+                const alnRes = GAME_ALIENS[aln.resourceGuid];
+                const shp = (a.type === "Ship" ? a : b) as ShipEntity;
+                const shpRes = GAME_SHIPS[shp.resourceGuid];
+
+                this.applyDamageWithShield(
+                    aln,
+                    this.SHIP_TO_SHIP_DMG_FACTOR * impactSpeed * alnRes.mass,
+                );
+                this.applyDamageWithShield(
+                    shp,
+                    this.SHIP_TO_SHIP_DMG_FACTOR * impactSpeed * shpRes.mass,
+                );
+
+                if (shp.hp <= 0) {
+                    leaderboard[shp.id].deaths++;
+                }
 
                 break;
             }
@@ -167,14 +212,22 @@ export class CollisionManager {
                 prj.traveled = prj.travelLimit;
 
                 if (shp.hp <= 0) {
-                    leaderboard[prj.shooterId].kills++;
+                    if (leaderboard[prj.shooterId]) {
+                        leaderboard[prj.shooterId].kills++;
+                    }
                     leaderboard[shp.id].deaths++;
                 }
 
                 break;
             }
+            case "Alien-Projectile": {
+                const aln = (a.type === "Alien" ? a : b) as AlienEntity;
+                const prj = (a.type === "Projectile" ? a : b) as ProjectileEntity;
+                const prjRes = GAME_PROJECTILES[prj.resourceGuid];
 
-            case "Projectile-Projectile": {
+                this.applyDamageWithShield(aln, prjRes.damage);
+                prj.traveled = prj.travelLimit;
+
                 break;
             }
         }
@@ -202,7 +255,7 @@ export class CollisionManager {
         }
     }
 
-    private static applyDamageWithShield(shp: ShipEntity, dmg: number) {
+    private static applyDamageWithShield(shp: ShipEntity | AlienEntity, dmg: number) {
         const shieldAbsorb = Math.min(shp.sp, dmg);
         shp.sp = Math.max(0, shp.sp - dmg);
         const leftover = Math.max(0, dmg - shieldAbsorb);

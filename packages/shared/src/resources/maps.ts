@@ -13,4 +13,8 @@ export const MILKY_WAY: GameMap = {
         { guid: "ast-large-ball", cooldown: 27 },
         { guid: "ast-super-ball", cooldown: 100 },
     ],
+    aliens: [
+        { guid: "alien-raider", limit: 12 },
+        { guid: "alien-chef-raider", limit: 2 },
+    ],
 };

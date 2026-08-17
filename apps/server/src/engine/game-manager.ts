@@ -8,8 +8,10 @@ import {
     gameConfig,
     GAME_SHIPS,
     GameStatistics,
+    AlienEntity,
 } from "@space/shared";
 
+import { AlienManager } from "./alien-manager";
 import { AsteroidManager } from "./asteroid-manager";
 import { CollisionManager } from "./collision-manager";
 import { ProjectilesManger } from "./projectiles-manager";
@@ -24,6 +26,7 @@ export class GameManager {
 
     private ships: ShipEntity[] = [];
     private destroyedShips: ShipEntity[] = [];
+    private aliens: AlienEntity[] = [];
     private asteroids: AsteroidEntity[] = [];
     private projectiles: ProjectileEntity[] = [];
 
@@ -72,16 +75,12 @@ export class GameManager {
 
         ProjectilesManger.moveProjectiles(dt, this.projectiles);
 
+        AlienManager.moveAliens(dt, this.aliens, this.ships, this.projectiles);
+
         AsteroidManager.moveAsteroids(dt, this.asteroids);
-        AsteroidManager.spawnAsteroids({
-            dt,
-            asteroids: this.asteroids,
-            spawns: this.asteroidSpawns,
-            map: this.map,
-        });
 
         CollisionManager.checkCollisions(
-            [...this.ships, ...this.asteroids, ...this.projectiles],
+            [...this.ships, ...this.aliens, ...this.asteroids, ...this.projectiles],
             this.statistics.leaderboard,
         );
 
@@ -89,6 +88,15 @@ export class GameManager {
 
         this.slowLoopProgress += dt;
         if (this.slowLoopProgress >= this.slowLoopThreshold) {
+            AlienManager.spawnAliens(this.aliens, this.map);
+
+            AsteroidManager.spawnAsteroids({
+                dt: this.slowLoopThreshold,
+                asteroids: this.asteroids,
+                spawns: this.asteroidSpawns,
+                map: this.map,
+            });
+
             CollisionManager.checkRadiation(
                 [...this.ships, ...this.asteroids],
                 this.map,
@@ -104,6 +112,8 @@ export class GameManager {
     }
 
     private checkDestruction() {
+        this.aliens = this.aliens.filter((alien) => alien.hp > 0);
+
         this.asteroids = this.asteroids.filter((asteroid) => asteroid.hp > 0);
 
         this.projectiles = this.projectiles.filter(
@@ -165,6 +175,16 @@ export class GameManager {
                 x: ship.x,
                 y: ship.y,
                 rot: ship.rot,
+            })),
+            aliens: this.aliens.map((alien) => ({
+                id: alien.id,
+                resourceGuid: alien.resourceGuid,
+                name: alien.name,
+                hp: alien.hp,
+                sp: alien.sp,
+                x: alien.x,
+                y: alien.y,
+                rot: alien.rot,
             })),
             asteroids: this.asteroids.map((asteroid) => ({
                 id: asteroid.id,

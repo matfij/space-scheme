@@ -50,3 +50,5 @@ export const lerpAngle = (a: number, b: number, t: number) => {
 
     return a + delta * t;
 };
+
+export const checkChance = (chance: number) => chance > Math.random();

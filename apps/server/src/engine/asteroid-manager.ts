@@ -72,7 +72,7 @@ export class AsteroidManager {
 
     static moveAsteroids(dt: number, asteroids: AsteroidEntity[]) {
         for (const asteroid of asteroids) {
-            AsteroidManager.moveAsteroid(dt, asteroid);
+            this.moveAsteroid(dt, asteroid);
         }
     }
 

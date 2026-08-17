@@ -16,7 +16,7 @@ import { HudRenderer } from "./hud-renderer";
 
 export class GameRenderer {
     private readonly SPRITE_INDEX = 0;
-    private readonly HUD_INDEX = 0;
+    private readonly HUD_INDEX = 1;
     private readonly CAMERA_SMOOTHING = 0.12;
 
     private playerId = useGameStore.getState().playerId;
@@ -33,6 +33,7 @@ export class GameRenderer {
 
     private huds = new Map<string, Container>();
     private shipGraphics = new Map<string, Container>();
+    private alienGraphics = new Map<string, Container>();
     private asteroidGraphics = new Map<string, Container>();
     private projectileGraphics = new Map<string, Container>();
 
@@ -74,6 +75,10 @@ export class GameRenderer {
 
         this.syncEntities(state.ships, this.shipGraphics, (ship) =>
             EntityRenderer.render(ship, this.huds),
+        );
+
+        this.syncEntities(state.aliens, this.alienGraphics, (alien) =>
+            EntityRenderer.render(alien, this.huds),
         );
 
         this.syncEntities(state.asteroids, this.asteroidGraphics, (asteroid) =>

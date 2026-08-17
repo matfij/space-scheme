@@ -1,4 +1,4 @@
-import type { ShipGuid } from "./resources";
+import type { ResourceGuid, ShipGuid } from "./resources";
 
 export type JoinMessage = {
     type: "join";
@@ -36,7 +36,7 @@ export type ControlInput = {
 export type GameState = {
     ships: {
         id: string;
-        resourceGuid: string;
+        resourceGuid: ResourceGuid;
         name: string;
         hp: number;
         sp: number;
@@ -44,8 +44,18 @@ export type GameState = {
         y: number;
         rot: number;
     }[];
-    asteroids: { id: string; resourceGuid: string; hp: number; x: number; y: number }[];
-    projectiles: { id: string; resourceGuid: string; x: number; y: number; rot: number }[];
+    aliens: {
+        id: string;
+        resourceGuid: ResourceGuid;
+        name: string;
+        hp: number;
+        sp: number;
+        x: number;
+        y: number;
+        rot: number;
+    }[];
+    asteroids: { id: string; resourceGuid: ResourceGuid; hp: number; x: number; y: number }[];
+    projectiles: { id: string; resourceGuid: ResourceGuid; x: number; y: number; rot: number }[];
 };
 
 export type GameStatistics = {
