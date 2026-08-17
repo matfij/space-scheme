@@ -10,10 +10,13 @@ import { Application, Container, Graphics, Sprite } from "pixi.js";
 
 import { useGameStore } from "../common/game-store";
 import { BackgroundRenderer } from "./background-renderer";
+import { DestructionRenderer, type DestroyedGraphic } from "./destruction-renderer";
 import { EntityRenderer } from "./entity-renderer";
 import { HudRenderer } from "./hud-renderer";
 
 export class GameRenderer {
+    private readonly SPRITE_INDEX = 0;
+    private readonly HUD_INDEX = 0;
     private readonly CAMERA_SMOOTHING = 0.12;
 
     private playerId = useGameStore.getState().playerId;
@@ -32,6 +35,8 @@ export class GameRenderer {
     private shipGraphics = new Map<string, Container>();
     private asteroidGraphics = new Map<string, Container>();
     private projectileGraphics = new Map<string, Container>();
+
+    private graphicsToDestroy: DestroyedGraphic[] = [];
 
     private cameraX = 0;
     private cameraY = 0;
@@ -80,6 +85,8 @@ export class GameRenderer {
         );
 
         this.moveCamera(state.ships);
+
+        DestructionRenderer.render(this.graphicsToDestroy);
     }
 
     private syncEntities(
@@ -102,7 +109,7 @@ export class GameRenderer {
             graphic.position.set(entity.x, entity.y);
 
             if ("rot" in entity) {
-                graphic.children[0].rotation = entity.rot; // sprite is child 0, hud is 1
+                graphic.children[this.SPRITE_INDEX].rotation = entity.rot;
             }
 
             if ("name" in entity || "hp" in entity || "sp" in entity) {
@@ -116,8 +123,18 @@ export class GameRenderer {
 
         for (const [id, graphic] of map) {
             if (!seen.has(id)) {
+                const isProjectile = this.projectileGraphics.has(id);
+
                 map.delete(id);
                 this.huds.delete(id);
+
+                if (!isProjectile) {
+                    this.mapLayer.addChild(graphic);
+                    graphic.children[this.HUD_INDEX].destroy();
+                    this.graphicsToDestroy.push(DestructionRenderer.createEffect(graphic));
+                    continue;
+                }
+
                 this.mapLayer.removeChild(graphic);
                 graphic.destroy({ children: true });
             }
