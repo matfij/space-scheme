@@ -14,6 +14,7 @@ export const SMALL_BALL: AsteroidResource = {
         width: 2,
         color: "rgb(47, 53, 75)",
         radius: 25,
+        isAsteroid: true,
     },
 };
 
@@ -29,6 +30,7 @@ export const MED_BALL: AsteroidResource = {
         width: 2,
         color: "rgb(65, 51, 74)",
         radius: 35,
+        isAsteroid: true,
     },
 };
 
@@ -41,9 +43,10 @@ export const LARGE_BALL: AsteroidResource = {
     maxSpeed: 100,
     sprite: {
         type: "Circle",
-        width: 2,
+        width: 3,
         color: "rgb(57, 66, 23)",
         radius: 80,
+        isAsteroid: true,
     },
 };
 
@@ -56,9 +59,10 @@ export const SUPER_BALL: AsteroidResource = {
     maxSpeed: 100,
     sprite: {
         type: "Circle",
-        width: 2,
+        width: 5,
         color: "rgb(201, 239, 247)",
         radius: 200,
+        isAsteroid: true,
     },
 };
 

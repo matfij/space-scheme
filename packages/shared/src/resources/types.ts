@@ -19,7 +19,7 @@ export type GameResource<T> = {
     radius: number;
     mass: number;
     sprite: { color: string; width: number } & (
-        | { type: "Circle"; radius: number }
+        | { type: "Circle"; radius: number; isAsteroid?: boolean }
         | { type: "Polygon"; coordinates: number[][] }
     );
 } & (

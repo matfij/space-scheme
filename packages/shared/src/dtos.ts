@@ -52,3 +52,5 @@ export type GameStatistics = {
     time: number;
     leaderboard: Record<string, { name: string; kills: number; deaths: number }>;
 };
+
+export type GameStateEntity = GameState["ships" | "asteroids" | "projectiles"][number];

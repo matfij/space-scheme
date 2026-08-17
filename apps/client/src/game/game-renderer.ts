@@ -4,12 +4,14 @@ import {
     gameConfig,
     type GameMap,
     type GameState,
+    type GameStateEntity,
 } from "@space/shared";
 import { Application, Container, Graphics, Sprite } from "pixi.js";
 
 import { useGameStore } from "../common/game-store";
 import { BackgroundRenderer } from "./background-renderer";
 import { EntityRenderer } from "./entity-renderer";
+import { HudRenderer } from "./hud-renderer";
 
 export class GameRenderer {
     private readonly CAMERA_SMOOTHING = 0.12;
@@ -81,9 +83,9 @@ export class GameRenderer {
     }
 
     private syncEntities(
-        entities: GameState["ships" | "asteroids" | "projectiles"],
+        entities: GameStateEntity[],
         map: Map<string, Container>,
-        factory: (entity: GameState["ships" | "asteroids" | "projectiles"][number]) => Container,
+        factory: (entity: GameStateEntity) => Container,
     ) {
         const seen = new Set<string>();
 
@@ -107,7 +109,7 @@ export class GameRenderer {
                 const hud = this.huds.get(entity.id);
                 if (hud) {
                     const resource = GAME_RESOURCES[entity.resourceGuid];
-                    EntityRenderer.buildHud(hud, entity, resource);
+                    HudRenderer.render(hud, entity, resource);
                 }
             }
         }

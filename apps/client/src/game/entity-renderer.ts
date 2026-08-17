@@ -1,17 +1,20 @@
 import {
     GAME_RESOURCES,
-    gameColors,
     type GameResource,
-    type GameState,
+    type GameStateEntity,
     type ResourceGuid,
 } from "@space/shared";
-import { Container, Graphics, Text } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
+
+import { HudRenderer } from "./hud-renderer";
 
 export class EntityRenderer {
-    public static render(
-        entity: GameState["ships" | "asteroids" | "projectiles"][number],
-        huds?: Map<string, Container>,
-    ) {
+    private static readonly ASTEROID = {
+        POINTS_TO_INTERPOLATE: 16,
+        JAGGEDNESS: 0.1,
+    };
+
+    public static render(entity: GameStateEntity, huds?: Map<string, Container>) {
         const resource = GAME_RESOURCES[entity.resourceGuid];
         const container = new Container();
 
@@ -20,7 +23,7 @@ export class EntityRenderer {
 
         if (huds) {
             const hud = new Container();
-            this.buildHud(hud, entity, resource);
+            HudRenderer.render(hud, entity, resource);
             container.addChild(hud);
             huds.set(entity.id, hud);
         }
@@ -31,20 +34,12 @@ export class EntityRenderer {
     private static renderSprite(sprite: GameResource<ResourceGuid>["sprite"]) {
         switch (sprite.type) {
             case "Circle":
-                const g = new Graphics();
-
-                g.circle(0, 0, sprite.radius).fill(sprite.color);
-                g.circle(0, 0, sprite.radius * 0.92).fill("rgba(0,0,0,0.08)");
-                g.circle(0, 0, sprite.radius).stroke({ color: "rgba(255,255,255,0.2)", width: 2 });
-
-                for (let i = 0; i < 6; i++) {
-                    const x = (Math.random() - 0.5) * sprite.radius * 1.2;
-                    const y = (Math.random() - 0.5) * sprite.radius * 1.2;
-                    g.moveTo(x, y);
-                    g.lineTo(x + 8, y + 3);
-                    g.stroke({ color: "rgba(0,0,0,0.18)", width: 2 });
+                if (sprite.isAsteroid) {
+                    return this.renderAsteroidSprite(sprite);
+                } else {
+                    const graphic = new Graphics().circle(0, 0, sprite.radius).fill(sprite.color);
+                    return graphic;
                 }
-                return g;
             case "Polygon":
                 const graphic = new Graphics().moveTo(
                     sprite.coordinates[0][0],
@@ -58,52 +53,42 @@ export class EntityRenderer {
         }
     }
 
-    static buildHud(
-        hud: Container,
-        entity: GameState["ships" | "asteroids" | "projectiles"][number],
-        resource: { radius: number; health?: number; shield?: number },
-    ) {
-        hud.removeChildren();
+    private static renderAsteroidSprite(sprite: { color: string; radius: number; width: number }) {
+        const graphic = new Graphics();
 
-        const verticalOffset = "name" in entity ? resource.radius + 30 : resource.radius + 5;
-        hud.position.set(0, verticalOffset);
-
-        const barWidth = 50;
-        const barHeight = 4;
-
-        if ("hp" in entity && resource.health) {
-            const healthBg = new Graphics()
-                .rect(-barWidth / 2, 0, barWidth, barHeight)
-                .fill(gameColors.healthBarLow);
-            const healthFill = new Graphics()
-                .rect(-barWidth / 2, 0, barWidth * (entity.hp / resource.health), barHeight)
-                .fill(gameColors.healthBarHigh);
-            hud.addChild(healthBg, healthFill);
+        // circular interpolation
+        const vertices: { x: number; y: number }[] = [];
+        for (let i = 0; i < this.ASTEROID.POINTS_TO_INTERPOLATE; i++) {
+            const angle = (i / this.ASTEROID.POINTS_TO_INTERPOLATE) * Math.PI * 2;
+            const r =
+                sprite.radius *
+                (1 - this.ASTEROID.JAGGEDNESS / 2 + Math.random() * this.ASTEROID.JAGGEDNESS);
+            vertices.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
         }
 
-        if ("sp" in entity && resource.shield) {
-            const shieldBg = new Graphics()
-                .rect(-barWidth / 2, barHeight + 2, barWidth, barHeight)
-                .fill(gameColors.shieldBarLow);
-            const shieldFill = new Graphics()
-                .rect(
-                    -barWidth / 2,
-                    barHeight + 2,
-                    barWidth * (entity.sp / resource.shield),
-                    barHeight,
-                )
-                .fill(gameColors.shieldBarHigh);
-            hud.addChild(shieldBg, shieldFill);
+        graphic.poly(vertices).fill(sprite.color);
+        graphic.poly(vertices).stroke({ color: "rgba(141, 81, 81, 0.3)", width: sprite.width });
+
+        // craters
+        for (let i = 0; i < Math.floor(sprite.radius / 12); i++) {
+            const cx = (Math.random() - 0.5) * sprite.radius * 1.1;
+            const cy = (Math.random() - 0.5) * sprite.radius * 1.1;
+            const cr = sprite.radius * (0.08 + Math.random() * 0.12);
+            graphic.circle(cx, cy, cr).fill("rgba(60, 37, 37, 0.15)");
+            graphic
+                .circle(cx, cy, cr)
+                .stroke({ color: "rgba(20, 10, 10, 0.2)", width: sprite.width });
         }
 
-        if ("name" in entity) {
-            const name = new Text({
-                text: entity.name,
-                style: { fill: gameColors.fontLight, fontSize: 12 },
-            });
-            name.anchor.set(0.5, 1);
-            name.position.set(0, -4);
-            hud.addChild(name);
+        // cracks
+        for (let i = 0; i < Math.floor(sprite.radius / 12); i++) {
+            const x = (Math.random() - 0.5) * sprite.radius * 1.2;
+            const y = (Math.random() - 0.5) * sprite.radius * 1.2;
+            graphic.moveTo(x, y);
+            graphic.lineTo(x + sprite.radius / 5, y + sprite.radius / 5);
+            graphic.stroke({ color: "rgba(60, 37, 37, 0.18)", width: sprite.width });
         }
+
+        return graphic;
     }
 }
