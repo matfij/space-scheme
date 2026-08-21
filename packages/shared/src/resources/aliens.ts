@@ -1,6 +1,6 @@
 import type { AlienResource } from "./types";
 
-export type AlienGuid = "alien-raider" | "alien-chef-raider";
+export type AlienGuid = "alien-raider" | "alien-chef-raider" | "alien-sanayewz";
 
 export const RAIDER: AlienResource = {
     guid: "alien-raider",
@@ -14,9 +14,14 @@ export const RAIDER: AlienResource = {
     drag: 0.994,
     maxSpeed: 150,
     acceleration: 400,
+    rotationSpeed: 1.5,
     projectTileCooldown: 90,
     projectileGuids: ["proj-heavy-laser"],
-    rotationSpeed: 1.5,
+    ai: {
+        forgetfulness: 0.01,
+        calibration: 0.1,
+        aggressiveness: 0.07,
+    },
     sprite: {
         type: "Polygon",
         width: 2,
@@ -50,9 +55,14 @@ export const CHEF_RAIDER: AlienResource = {
     drag: 0.994,
     maxSpeed: 180,
     acceleration: 700,
+    rotationSpeed: 1.75,
     projectTileCooldown: 90,
     projectileGuids: ["proj-heavy-laser", "proj-heavy-laser"],
-    rotationSpeed: 1.75,
+    ai: {
+        forgetfulness: 0.008,
+        calibration: 0.12,
+        aggressiveness: 0.09,
+    },
     sprite: {
         type: "Polygon",
         width: 2,
@@ -78,7 +88,59 @@ export const CHEF_RAIDER: AlienResource = {
     },
 };
 
+export const SANAYEWZ: AlienResource = {
+    guid: "alien-sanayewz",
+    name: ".~~SaNaYeWz~~.",
+    type: "Alien",
+    health: 16_000,
+    shield: 1200,
+    shieldRegeneration: 40,
+    radius: 30,
+    mass: 300,
+    drag: 0.994,
+    maxSpeed: 240,
+    acceleration: 600,
+    rotationSpeed: 1.75,
+    projectTileCooldown: 90,
+    projectileGuids: [
+        "proj-heavy-laser",
+        "proj-heavy-laser",
+        "proj-heavy-laser",
+        "proj-heavy-laser",
+    ],
+    ai: {
+        forgetfulness: 0,
+        calibration: 0.2,
+        aggressiveness: 0.16,
+    },
+    sprite: {
+        type: "Polygon",
+        width: 2,
+        color: "rgb(194, 66, 248)",
+        coordinates: [
+            [40, 0],
+            [12, -6],
+            [14, -14],
+            [4, -10],
+            [-22, -34],
+            [-14, -12],
+            [-30, -18],
+            [-10, -4],
+            [-16, -2],
+            [-16, 2],
+            [-10, 4],
+            [-30, 18],
+            [-14, 12],
+            [-22, 34],
+            [4, 10],
+            [14, 14],
+            [12, 6],
+        ],
+    },
+};
+
 export const GAME_ALIENS = {
     [RAIDER.guid]: RAIDER,
     [CHEF_RAIDER.guid]: CHEF_RAIDER,
+    [SANAYEWZ.guid]: SANAYEWZ,
 } as const;

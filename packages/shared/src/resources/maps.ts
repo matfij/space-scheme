@@ -16,5 +16,6 @@ export const MILKY_WAY: GameMap = {
     aliens: [
         { guid: "alien-raider", limit: 12 },
         { guid: "alien-chef-raider", limit: 2 },
+        { guid: "alien-sanayewz", limit: 1 },
     ],
 };

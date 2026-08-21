@@ -50,6 +50,11 @@ export type GameResource<T> = {
           rotationSpeed: number;
           projectTileCooldown: number;
           projectileGuids: ProjectileGuid[];
+          ai: {
+              forgetfulness: number; // how often switch targets
+              calibration: number; // how promptly follows target
+              aggressiveness: number; // how often shoots
+          };
       }
     | {
           type: "Asteroid";

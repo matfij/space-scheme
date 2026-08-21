@@ -14,9 +14,6 @@ import { ProjectilesManger } from "./projectiles-manager";
 
 export class AlienManager {
     private static readonly SPAWN_EDGE_OFFSET = 100;
-    private static readonly SWITCH_TARGET_CHANCE = 0.01;
-    private static readonly FOLLOW_TARGET_CHANCE = 0.12;
-    private static readonly SHOOT_CHANCE = 0.08;
 
     static spawnAliens(alines: AlienEntity[], map: GameMap) {
         for (const spawn of map.aliens) {
@@ -56,13 +53,14 @@ export class AlienManager {
             if (players.length > 0) {
                 let targetId = alien.target.id;
                 let currentTarget = players.find((player) => player.id === targetId);
+                const resource = GAME_ALIENS[alien.resourceGuid];
 
-                if (!currentTarget || checkChance(this.SWITCH_TARGET_CHANCE)) {
+                if (!currentTarget || checkChance(resource.ai.forgetfulness)) {
                     const newTarget = getRandomElement(players);
                     alien.target.id = newTarget.id;
                     alien.target.x = newTarget.x;
                     alien.target.y = newTarget.y;
-                } else if (currentTarget && checkChance(this.FOLLOW_TARGET_CHANCE)) {
+                } else if (currentTarget && checkChance(resource.ai.calibration)) {
                     alien.target.x = currentTarget.x;
                     alien.target.y = currentTarget.y;
                 }
@@ -120,7 +118,7 @@ export class AlienManager {
             alien.rot += Math.sign(dRot) * maxDRot;
         }
 
-        if (checkChance(this.SHOOT_CHANCE)) {
+        if (checkChance(resource.ai.aggressiveness)) {
             ProjectilesManger.shootProjectiles({
                 shooterId: alien.id,
                 projectiles,
