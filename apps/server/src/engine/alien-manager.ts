@@ -133,6 +133,13 @@ export class AlienManager {
         }
     }
 
+    static regenerateShields(aliens: AlienEntity[]) {
+        for (const alien of aliens) {
+            const resource = GAME_ALIENS[alien.resourceGuid];
+            alien.sp = Math.min(resource.shield, alien.sp + resource.shieldRegeneration);
+        }
+    }
+
     private static getSpawnLocation(map: GameMap, radius: number) {
         let x = 0;
         let y = 0;

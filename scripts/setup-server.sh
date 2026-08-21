@@ -38,3 +38,16 @@ systemctl reload nginx
 # setup certbot
 sudo apt install certbot python3-certbot-nginx -y
 sudo certbot --nginx -d server.space-scheme.online -d space-scheme.online -d www.space-scheme.online
+
+# setup server process
+pnpm setup
+source ~/.bashrc
+pnpm add -g pm2
+cd apps/server && pm2 start "pnpm start" --name space-server
+
+# restart server process
+pm2 stop space-server
+git pull
+pnpm install
+pnpm build
+pm2 start space-server

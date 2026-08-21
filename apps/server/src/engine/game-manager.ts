@@ -105,6 +105,8 @@ export class GameManager {
 
             ShipManager.regenerateShields(this.ships);
 
+            AlienManager.regenerateShields(this.aliens);
+
             this.checkRespawn(this.slowLoopThreshold);
 
             this.slowLoopProgress = 0;
