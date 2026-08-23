@@ -20,6 +20,7 @@ export const RAIDER: AlienResource = {
     ai: {
         forgetfulness: 0.01,
         calibration: 0.1,
+        proximity: 250,
         aggressiveness: 0.07,
     },
     sprite: {
@@ -61,6 +62,7 @@ export const CHEF_RAIDER: AlienResource = {
     ai: {
         forgetfulness: 0.008,
         calibration: 0.12,
+        proximity: 250,
         aggressiveness: 0.09,
     },
     sprite: {
@@ -111,6 +113,7 @@ export const SANAYEWZ: AlienResource = {
     ai: {
         forgetfulness: 0,
         calibration: 0.2,
+        proximity: 250,
         aggressiveness: 0.16,
     },
     sprite: {

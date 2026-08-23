@@ -106,8 +106,11 @@ export class AlienManager {
             alien.vy *= scale;
         }
 
-        alien.x += dt * alien.vx;
-        alien.y += dt * alien.vy;
+        const moveAwayX = Math.abs(alien.x - alien.target.x) < resource.ai.proximity;
+        const moveAwayY = Math.abs(alien.y - alien.target.y) < resource.ai.proximity;
+
+        alien.x += dt * (moveAwayX ? -alien.vx : alien.vx);
+        alien.y += dt * (moveAwayY ? -alien.vy : alien.vy);
 
         let dRot = alien.tRot - alien.rot;
         dRot = Math.atan2(Math.sin(dRot), Math.cos(dRot));

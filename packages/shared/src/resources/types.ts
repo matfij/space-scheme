@@ -53,6 +53,7 @@ export type GameResource<T> = {
           ai: {
               forgetfulness: number; // how often switch targets
               calibration: number; // how promptly follows target
+              proximity: number; // how close alien get to player
               aggressiveness: number; // how often shoots
           };
       }
