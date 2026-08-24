@@ -2,6 +2,8 @@ import type { ShipResource } from "./types";
 
 export type ShipGuid = "ship-falco" | "ship-aegis" | "ship-leon" | "ship-havoc";
 
+export type ShipAbilityGuid = "laser-barrage";
+
 export const FALCO: ShipResource = {
     guid: "ship-falco",
     name: "Falco",
@@ -14,9 +16,14 @@ export const FALCO: ShipResource = {
     drag: 0.992,
     maxSpeed: 300,
     acceleration: 1000,
+    rotationSpeed: 3,
     projectTileCooldown: 50,
     projectileGuids: ["proj-swift-laser", "proj-swift-laser"],
-    rotationSpeed: 3,
+    ability: {
+        guid: "laser-barrage",
+        duration: 5,
+        cooldown: 30,
+    },
     sprite: {
         type: "Polygon",
         width: 2,
@@ -42,9 +49,14 @@ export const AEGIS: ShipResource = {
     drag: 0.994,
     maxSpeed: 200,
     acceleration: 600,
+    rotationSpeed: 2,
     projectTileCooldown: 90,
     projectileGuids: ["proj-heavy-laser", "proj-heavy-laser"],
-    rotationSpeed: 2,
+    ability: {
+        guid: "laser-barrage",
+        duration: 5,
+        cooldown: 30,
+    },
     sprite: {
         type: "Polygon",
         width: 2,
@@ -71,9 +83,14 @@ export const LEON: ShipResource = {
     drag: 0.994,
     maxSpeed: 260,
     acceleration: 800,
+    rotationSpeed: 2.5,
     projectTileCooldown: 60,
     projectileGuids: ["proj-swift-laser", "proj-swift-laser", "proj-swift-laser"],
-    rotationSpeed: 2.5,
+    ability: {
+        guid: "laser-barrage",
+        duration: 5,
+        cooldown: 30,
+    },
     sprite: {
         type: "Polygon",
         width: 2,
@@ -106,9 +123,14 @@ export const HAVOC: ShipResource = {
     drag: 0.994,
     maxSpeed: 270,
     acceleration: 800,
+    rotationSpeed: 2.7,
     projectTileCooldown: 60,
     projectileGuids: ["proj-swift-laser", "proj-heavy-laser", "proj-swift-laser"],
-    rotationSpeed: 2.7,
+    ability: {
+        guid: "laser-barrage",
+        duration: 5,
+        cooldown: 30,
+    },
     sprite: {
         type: "Polygon",
         width: 2,

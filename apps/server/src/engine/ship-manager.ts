@@ -35,6 +35,11 @@ export class ShipManager {
             vx: 0,
             vy: 0,
             respawnProgress: 0,
+            ability: {
+                guid: resource.ability.guid,
+                timeLeft: 0,
+                cooldown: 0,
+            },
             inputs: [],
         };
     }
@@ -50,6 +55,9 @@ export class ShipManager {
         let dy = 0;
         const resource = GAME_SHIPS[ship.resourceGuid];
 
+        ship.ability.timeLeft = Math.max(0, ship.ability.timeLeft - dt);
+        ship.ability.cooldown = Math.max(0, ship.ability.cooldown - dt);
+
         if (ship.inputs.includes("KeyA")) {
             dx--;
         }
@@ -64,15 +72,33 @@ export class ShipManager {
         }
 
         if (ship.inputs.includes("KeyO")) {
+            let projectileGuids = resource.projectileGuids;
+
+            if (ship.ability.guid === "laser-barrage" && ship.ability.timeLeft > 0) {
+                projectileGuids = [
+                    ...resource.projectileGuids,
+                    ...resource.projectileGuids,
+                    ...resource.projectileGuids,
+                ];
+            }
+
             ProjectilesManger.shootProjectiles({
                 shooterId: ship.id,
                 shooterRadius: resource.radius,
-                projectileGuids: resource.projectileGuids,
+                projectileGuids,
                 x: ship.x,
                 y: ship.y,
                 rot: ship.rot,
                 projectiles,
             });
+        }
+
+        if (ship.inputs.includes("KeyP")) {
+            if (ship.ability.cooldown > 0) {
+                return;
+            }
+            ship.ability.timeLeft = resource.ability.duration;
+            ship.ability.cooldown = resource.ability.duration + resource.ability.cooldown;
         }
 
         if (dx !== 0 || dy !== 0) {

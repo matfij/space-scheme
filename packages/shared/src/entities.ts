@@ -1,4 +1,4 @@
-import type { ResourceGuid } from "./resources";
+import type { ResourceGuid, ShipAbilityGuid } from "./resources";
 
 export type EntityKind = "Ship" | "Alien" | "Asteroid" | "Projectile";
 
@@ -21,6 +21,11 @@ export type ShipEntity = BaseEntity<"Ship"> & {
     tRot: number;
     respawnProgress: number;
     inputs: string[];
+    ability: {
+        guid: ShipAbilityGuid;
+        timeLeft: number;
+        cooldown: number;
+    }
 };
 
 export type AlienEntity = BaseEntity<"Alien"> & {

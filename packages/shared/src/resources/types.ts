@@ -2,7 +2,7 @@ import type { EntityKind } from "../entities";
 import type { AlienGuid } from "./aliens";
 import type { AsteroidGuid } from "./asteroids";
 import type { ProjectileGuid } from "./projectiles";
-import type { ShipGuid } from "./ships";
+import type { ShipAbilityGuid, ShipGuid } from "./ships";
 
 export type GameMap = {
     guid: string;
@@ -37,6 +37,11 @@ export type GameResource<T> = {
           rotationSpeed: number;
           projectTileCooldown: number;
           projectileGuids: ProjectileGuid[];
+          ability: {
+              guid: ShipAbilityGuid;
+              duration: number;
+              cooldown: number;
+          };
       }
     | {
           type: "Alien";
