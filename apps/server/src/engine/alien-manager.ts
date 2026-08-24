@@ -75,18 +75,29 @@ export class AlienManager {
 
         let dx = 0;
         let dy = 0;
+        let dxRot = 0;
+        let dyRot = 0;
 
         if (alien.x > alien.target.x) {
             dx--;
-        }
-        if (alien.x < alien.target.x) {
+            dxRot--;
+        } else if (alien.x < alien.target.x) {
             dx++;
+            dxRot++;
         }
+        if (Math.abs(alien.x - alien.target.x) < resource.ai.proximity) {
+            dx = -dx;
+        }
+
         if (alien.y > alien.target.y) {
             dy--;
-        }
-        if (alien.y < alien.target.y) {
+            dyRot--;
+        } else if (alien.y < alien.target.y) {
             dy++;
+            dyRot++;
+        }
+        if (Math.abs(alien.y - alien.target.y) < resource.ai.proximity) {
+            dy = -dy;
         }
 
         if (dx !== 0 || dy !== 0) {
@@ -96,7 +107,7 @@ export class AlienManager {
 
             alien.vx += dx * dt * resource.acceleration;
             alien.vy += dy * dt * resource.acceleration;
-            alien.tRot = Math.atan2(dy, dx);
+            alien.tRot = Math.atan2(dyRot, dxRot);
         }
 
         const currentSpeed = Math.hypot(alien.vx, alien.vy);
@@ -106,11 +117,8 @@ export class AlienManager {
             alien.vy *= scale;
         }
 
-        const moveAwayX = Math.abs(alien.x - alien.target.x) < resource.ai.proximity;
-        const moveAwayY = Math.abs(alien.y - alien.target.y) < resource.ai.proximity;
-
-        alien.x += dt * (moveAwayX ? -alien.vx : alien.vx);
-        alien.y += dt * (moveAwayY ? -alien.vy : alien.vy);
+        alien.x += dt * alien.vx;
+        alien.y += dt * alien.vy;
 
         let dRot = alien.tRot - alien.rot;
         dRot = Math.atan2(Math.sin(dRot), Math.cos(dRot));
