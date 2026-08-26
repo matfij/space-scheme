@@ -1,6 +1,6 @@
 import type { AlienResource } from "./types";
 
-export type AlienGuid = "alien-raider" | "alien-chef-raider" | "alien-sanayewz";
+export type AlienGuid = "alien-raider" | "alien-chef-raider" | "alien-saneyew";
 
 export const RAIDER: AlienResource = {
     guid: "alien-raider",
@@ -20,7 +20,7 @@ export const RAIDER: AlienResource = {
     ai: {
         forgetfulness: 0.01,
         calibration: 0.1,
-        proximity: 250,
+        proximity: 0,
         aggressiveness: 0.07,
     },
     sprite: {
@@ -46,7 +46,7 @@ export const RAIDER: AlienResource = {
 
 export const CHEF_RAIDER: AlienResource = {
     guid: "alien-chef-raider",
-    name: "+:: Chef Raider ::+",
+    name: ".:: Chef Raider ::.",
     type: "Alien",
     health: 8000,
     shield: 400,
@@ -70,29 +70,33 @@ export const CHEF_RAIDER: AlienResource = {
         width: 2,
         color: "rgb(235, 142, 11)",
         coordinates: [
-            [32, 0],
-            [18, -8],
-            [22, -26],
-            [6, -16],
-            [0, -30],
+            [35, 0],
+            [24, -8],
+            [20, -14],
+            [22, -31],
+            [10, -22],
+            [0, -17],
             [-8, -16],
-            [-24, -22],
-            [-18, -6],
-            [-28, 0],
-            [-18, 6],
-            [-24, 22],
+            [-20, -28],
+            [-24, -16],
+            [-28, -8],
+            [-17, 0],
+            [-28, 8],
+            [-24, 16],
+            [-20, 28],
             [-8, 16],
-            [0, 30],
-            [6, 16],
-            [22, 26],
-            [18, 8],
+            [0, 17],
+            [10, 22],
+            [22, 31],
+            [20, 14],
+            [24, 8],
         ],
     },
 };
 
-export const SANAYEWZ: AlienResource = {
-    guid: "alien-sanayewz",
-    name: ".~~SaNaYeWz~~.",
+export const SANEYEW: AlienResource = {
+    guid: "alien-saneyew",
+    name: "~~{ SaNeYeW }~~",
     type: "Alien",
     health: 16_000,
     shield: 1200,
@@ -145,5 +149,5 @@ export const SANAYEWZ: AlienResource = {
 export const GAME_ALIENS = {
     [RAIDER.guid]: RAIDER,
     [CHEF_RAIDER.guid]: CHEF_RAIDER,
-    [SANAYEWZ.guid]: SANAYEWZ,
+    [SANEYEW.guid]: SANEYEW,
 } as const;

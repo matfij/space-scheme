@@ -8,14 +8,14 @@ export const MILKY_WAY: GameMap = {
     width: 8000,
     height: 4400,
     asteroids: [
-        { guid: "ast-small-ball", cooldown: 3 },
-        { guid: "ast-med-ball", cooldown: 9 },
-        { guid: "ast-large-ball", cooldown: 27 },
-        { guid: "ast-super-ball", cooldown: 100 },
+        { guid: "ast-small-ball", cooldown: 2 },
+        { guid: "ast-med-ball", cooldown: 7 },
+        { guid: "ast-large-ball", cooldown: 19 },
+        { guid: "ast-super-ball", cooldown: 90 },
     ],
     aliens: [
         { guid: "alien-raider", limit: 12 },
         { guid: "alien-chef-raider", limit: 2 },
-        { guid: "alien-sanayewz", limit: 1 },
+        { guid: "alien-saneyew", limit: 1 },
     ],
 };

@@ -18,9 +18,14 @@ import { SpatialGrid } from "./spatial-grid";
 
 export class CollisionManager {
     private static readonly RESTITUTION = 0.8;
+    private static readonly ASTEROID_TO_ASTEROID_DMG_FACTOR = 0.05;
     private static readonly ASTEROID_TO_SHIP_DMG_FACTOR = 0.01;
-    private static readonly SHIP_TO_SHIP_DMG_FACTOR = 0.04;
+    private static readonly ASTEROID_TO_ALIEN_DMG_FACTOR = 0.01;
+    private static readonly SHIP_TO_SHIP_DMG_FACTOR = 0.02;
     private static readonly SHIP_TO_ASTEROID_DMG_FACTOR = 0.02;
+    private static readonly SHIP_TO_ALIEN_DMG_FACTOR = 0.02;
+    private static readonly ALIEN_TO_ASTEROID_DMG_FACTOR = 0.01;
+    private static readonly ALIEN_TO_SHIP_DMG_FACTOR = 0.01;
 
     private static readonly RADIATION_DAMAGE_FACTOR = 0.1;
 
@@ -107,8 +112,8 @@ export class CollisionManager {
                 const ast2 = b as AsteroidEntity;
                 const astRes2 = GAME_ASTEROIDS[ast2.resourceGuid];
 
-                ast1.hp -= impactSpeed * astRes2.mass;
-                ast2.hp -= impactSpeed * astRes1.mass;
+                ast1.hp -= this.ASTEROID_TO_ASTEROID_DMG_FACTOR * impactSpeed * astRes2.mass;
+                ast2.hp -= this.ASTEROID_TO_ASTEROID_DMG_FACTOR * impactSpeed * astRes1.mass;
 
                 break;
             }
@@ -139,10 +144,10 @@ export class CollisionManager {
 
                 this.applyDamageWithShield(
                     aln,
-                    this.ASTEROID_TO_SHIP_DMG_FACTOR * impactSpeed * astRes.mass,
+                    this.ASTEROID_TO_ALIEN_DMG_FACTOR * impactSpeed * astRes.mass,
                 );
 
-                ast.hp -= this.SHIP_TO_ASTEROID_DMG_FACTOR * impactSpeed * alnRes.mass;
+                ast.hp -= this.ALIEN_TO_ASTEROID_DMG_FACTOR * impactSpeed * alnRes.mass;
 
                 break;
             }
@@ -164,11 +169,11 @@ export class CollisionManager {
 
                 this.applyDamageWithShield(
                     aln,
-                    this.SHIP_TO_SHIP_DMG_FACTOR * impactSpeed * alnRes.mass,
+                    this.SHIP_TO_ALIEN_DMG_FACTOR * impactSpeed * alnRes.mass,
                 );
                 this.applyDamageWithShield(
                     shp,
-                    this.SHIP_TO_SHIP_DMG_FACTOR * impactSpeed * shpRes.mass,
+                    this.ALIEN_TO_SHIP_DMG_FACTOR * impactSpeed * shpRes.mass,
                 );
 
                 if (shp.hp <= 0) {
