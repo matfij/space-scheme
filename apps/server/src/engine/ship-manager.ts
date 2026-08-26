@@ -94,11 +94,10 @@ export class ShipManager {
         }
 
         if (ship.inputs.includes("KeyP")) {
-            if (ship.ability.cooldown > 0) {
-                return;
+            if (ship.ability.cooldown <= 0) {
+                ship.ability.timeLeft = resource.ability.duration;
+                ship.ability.cooldown = resource.ability.duration + resource.ability.cooldown;
             }
-            ship.ability.timeLeft = resource.ability.duration;
-            ship.ability.cooldown = resource.ability.duration + resource.ability.cooldown;
         }
 
         if (dx !== 0 || dy !== 0) {
