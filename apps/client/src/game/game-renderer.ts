@@ -120,7 +120,7 @@ export class GameRenderer {
             if ("name" in entity || "hp" in entity || "sp" in entity) {
                 const hud = this.huds.get(entity.id);
                 if (hud) {
-                    const resource = GAME_RESOURCES[entity.resourceGuid];
+                    const resource = GAME_RESOURCES[entity.rg];
                     HudRenderer.render(hud, entity, resource);
                 }
             }

@@ -36,31 +36,40 @@ export type ControlInput = {
 export type GameState = {
     ships: {
         id: string;
-        resourceGuid: ResourceGuid;
-        name: string;
+        rg: ResourceGuid;
+        n: string;
         hp: number;
         sp: number;
         x: number;
         y: number;
         rot: number;
+        at: number;
+        ac: number;
     }[];
     aliens: {
         id: string;
-        resourceGuid: ResourceGuid;
-        name: string;
+        rg: ResourceGuid;
+        n: string;
         hp: number;
         sp: number;
         x: number;
         y: number;
         rot: number;
     }[];
-    asteroids: { id: string; resourceGuid: ResourceGuid; hp: number; x: number; y: number }[];
-    projectiles: { id: string; resourceGuid: ResourceGuid; x: number; y: number; rot: number }[];
+    asteroids: { id: string; rg: ResourceGuid; hp: number; x: number; y: number }[];
+    projectiles: { id: string; rg: ResourceGuid; x: number; y: number; rot: number }[];
 };
 
 export type GameStatistics = {
     time: number;
     leaderboard: Record<string, { name: string; kills: number; deaths: number }>;
+};
+
+export type GameShip = {
+    hp: number;
+    sp: number;
+    abilityTime: number;
+    abilityCooldown: number;
 };
 
 export type GameStateEntity = GameState["ships" | "asteroids" | "projectiles"][number];

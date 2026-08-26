@@ -10,7 +10,7 @@ export class HudRenderer {
         entity: GameStateEntity,
         resource: { radius: number; health?: number; shield?: number },
     ) {
-        const verticalOffset = "name" in entity ? resource.radius + 30 : resource.radius + 5;
+        const verticalOffset = "n" in entity ? resource.radius + 30 : resource.radius + 5;
         hud.position.set(0, verticalOffset);
 
         if (hud.children.length === 0) {
@@ -20,9 +20,9 @@ export class HudRenderer {
             if ("sp" in entity && resource.shield) {
                 hud.addChild(new Graphics(), new Graphics());
             }
-            if ("name" in entity) {
+            if ("n" in entity) {
                 const name = new Text({
-                    text: entity.name,
+                    text: entity.n,
                     style: { fill: gameColors.fontLight, fontSize: 12 },
                 });
                 name.anchor.set(0.5, 1);

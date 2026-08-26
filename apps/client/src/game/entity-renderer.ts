@@ -15,7 +15,7 @@ export class EntityRenderer {
     };
 
     public static render(entity: GameStateEntity, huds?: Map<string, Container>) {
-        const resource = GAME_RESOURCES[entity.resourceGuid];
+        const resource = GAME_RESOURCES[entity.rg];
         const container = new Container();
 
         const graphic = this.renderSprite(resource.sprite);

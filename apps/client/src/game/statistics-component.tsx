@@ -66,7 +66,7 @@ export const StatisticsComponent = () => {
                 <div
                     onClick={() => setShowStatistics(true)}
                     className={styles.dialogOpenButton}
-                    style={{ top: "calc(2%)" }}
+                    style={{ top: "calc(2% + 4rem)" }}
                 >
                     <img src="icons/ranking.svg" />
                 </div>

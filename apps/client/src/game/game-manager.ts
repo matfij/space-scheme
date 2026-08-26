@@ -50,6 +50,15 @@ export class GameManger {
             switch (message.type) {
                 case "state": {
                     this.renderer?.render(message.data);
+                    const ship = message.data.ships.find((ship) => ship.id === params.playerId);
+                    if (ship) {
+                        useGameStore.getState().setShip({
+                            hp: ship.hp,
+                            sp: ship.sp,
+                            abilityTime: ship.at,
+                            abilityCooldown: ship.ac,
+                        });
+                    }
                     break;
                 }
                 case "statistics": {

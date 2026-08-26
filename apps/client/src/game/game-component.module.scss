@@ -64,6 +64,53 @@
     }
 }
 
+.shipRow {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    margin-top: $spacing-1;
+    margin-left: $spacing-1;
+
+    img {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    progress {
+        width: 100%;
+        height: 0.45rem;
+        border-radius: $radius-full;
+        border: 1px solid rgba($color-light-400, 0.5);
+        background: rgba($color-dark-100, 0.5);
+        color: var(--progress-color);
+    }
+
+    progress::-webkit-progress-bar {
+        background: rgba($color-dark-100, 0.5);
+        border-radius: $radius-full;
+    }
+
+    progress::-webkit-progress-value {
+        border-radius: $radius-full;
+        background: var(--progress-color);
+    }
+}
+
+.healthProgress {
+    --progress-color: #22c55e;
+    accent-color: #22c55e;
+}
+
+.shieldProgress {
+    --progress-color: #3b82f6;
+    accent-color: #3b82f6;
+}
+
+.abilityProgress {
+    --progress-color: #a855f7;
+    accent-color: #a855f7;
+}
+
 .statisticsTable {
     width: 100%;
 

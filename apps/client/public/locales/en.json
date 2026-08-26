@@ -9,6 +9,7 @@
         "join": "Join"
     },
     "ship": {
+        "ship": "Ship",
         "mass": "Mass",
         "firepower": "Firepower",
         "hp": "Health",
