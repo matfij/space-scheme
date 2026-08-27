@@ -2,9 +2,9 @@ import { GAME_SHIPS } from "@space/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useGameStore } from "../common/game-store";
+import { useGameStore } from "../../common/game-store";
 
-import styles from "./game-component.module.scss";
+import styles from "../game-component.module.scss";
 
 export const ShipComponent = () => {
     const { t } = useTranslation();

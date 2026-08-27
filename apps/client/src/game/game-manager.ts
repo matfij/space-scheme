@@ -8,7 +8,7 @@ import {
 } from "@space/shared";
 
 import { useGameStore } from "../common/game-store";
-import { GameRenderer } from "./game-renderer";
+import { GameRenderer } from "./renderers/game-renderer";
 
 export class GameManger {
     private playerId = useGameStore.getState().playerId!;

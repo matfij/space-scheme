@@ -8,7 +8,7 @@ import {
 } from "@space/shared";
 import { Application, Container, Graphics, Sprite } from "pixi.js";
 
-import { useGameStore } from "../common/game-store";
+import { useGameStore } from "../../common/game-store";
 import { BackgroundRenderer } from "./background-renderer";
 import { DestructionRenderer, type DestroyedGraphic } from "./destruction-renderer";
 import { EntityRenderer } from "./entity-renderer";

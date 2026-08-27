@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
 import { GameManger } from "./game-manager";
-import { ShipComponent } from "./ship-component";
-import { StatisticsComponent } from "./statistics-component";
-import { TutorialComponent } from "./tutorial-component";
+import { ShipComponent } from "./components/ship-component";
+import { StatisticsComponent } from "./components/statistics-component";
+import { TutorialComponent } from "./components/tutorial-component";
 
 import styles from "./game-component.module.scss";
 

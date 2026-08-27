@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import styles from "./game-component.module.scss";
+import styles from "../game-component.module.scss";
 
 export const TutorialComponent = () => {
     const { t } = useTranslation();

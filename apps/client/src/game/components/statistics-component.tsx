@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useGameStore } from "../common/game-store";
+import { useGameStore } from "../../common/game-store";
 
-import styles from "./game-component.module.scss";
+import styles from "../game-component.module.scss";
 
 export const StatisticsComponent = () => {
     const { t } = useTranslation();
