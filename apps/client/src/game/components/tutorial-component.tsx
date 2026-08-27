@@ -1,27 +1,35 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useDraggable } from "../../common/use-draggable";
+
 import styles from "../game-component.module.scss";
 
 export const TutorialComponent = () => {
     const { t } = useTranslation();
-    const [showTutorial, setShowTutorial] = useState(false);
+    const [showTutorial, setShowTutorial] = useState(true);
+    const { position, handlers } = useDraggable();
 
     return (
         <>
             {showTutorial && (
                 <div
                     className={styles.dialogWrapper}
-                    style={{ width: "16rem", left: "calc(50% - 8rem)" }}
+                    style={{
+                        width: "16rem",
+                        top: "20%",
+                        left: "calc(50% - 8rem)",
+                        transform: `translate(${position.x}px, ${position.y}px)`,
+                    }}
                 >
-                    <div className={styles.dialogHeader}>
-                        <p>{t("tutorial.controls")}</p>
+                    <div {...handlers} className={styles.dialogHeader}>
                         <div
                             onClick={() => setShowTutorial(false)}
                             className={styles.dialogCloseButton}
                         >
-                            <img src="icons/contract.svg" />
+                            <img src="icons/tutorial.svg" />
                         </div>
+                        <p>{t("tutorial.controls")}</p>
                     </div>
                     <div className={styles.tutorialRowsWrapper}>
                         <div className={styles.tutorialRow}>
@@ -36,15 +44,13 @@ export const TutorialComponent = () => {
                     </div>
                 </div>
             )}
-            {!showTutorial && (
-                <div
-                    onClick={() => setShowTutorial(true)}
-                    className={styles.dialogOpenButton}
-                    style={{ top: "calc(2% + 8rem)" }}
-                >
-                    <img src="icons/tutorial.svg" />
-                </div>
-            )}
+            <div
+                onClick={() => setShowTutorial(true)}
+                className={styles.dialogOpenButton}
+                style={{ top: "calc(2% + 8rem)" }}
+            >
+                <img src="icons/tutorial.svg" />
+            </div>
         </>
     );
 };

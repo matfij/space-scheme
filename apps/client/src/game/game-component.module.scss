@@ -8,9 +8,6 @@
 
 .dialogWrapper {
     position: fixed;
-    top: 5%;
-    left: calc(50% - 16rem);
-    width: 32rem;
     padding: $spacing-2;
     border-radius: $radius-md;
     border: 1px solid rgba($color-primary-200, 0.2);
@@ -19,7 +16,7 @@
 
 .dialogHeader {
     display: flex;
-    justify-content: space-between;
+    gap: $spacing-2;
     align-items: center;
 
     padding: $spacing-px $spacing-1 $spacing-1 $spacing-1;
@@ -27,6 +24,10 @@
     p {
         font-size: 14px;
         font-weight: 600;
+    }
+
+    &:hover {
+        cursor: grab;
     }
 }
 

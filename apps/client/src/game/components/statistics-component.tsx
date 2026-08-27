@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGameStore } from "../../common/game-store";
+import { useDraggable } from "../../common/use-draggable";
 
 import styles from "../game-component.module.scss";
 
@@ -9,6 +10,7 @@ export const StatisticsComponent = () => {
     const { t } = useTranslation();
     const { statistics } = useGameStore();
     const [showStatistics, setShowStatistics] = useState(false);
+    const { position, handlers } = useDraggable();
 
     const leaderboard = useMemo(
         () =>
@@ -30,15 +32,23 @@ export const StatisticsComponent = () => {
     return (
         <>
             {showStatistics && (
-                <div className={styles.dialogWrapper}>
-                    <div className={styles.dialogHeader}>
-                        <p>{t("statistics.ranking")}</p>
+                <div
+                    className={styles.dialogWrapper}
+                    style={{
+                        width: "32rem",
+                        top: "1rem",
+                        left: "calc(50% - 16rem)",
+                        transform: `translate(${position.x}px, ${position.y}px)`,
+                    }}
+                >
+                    <div {...handlers} className={styles.dialogHeader}>
                         <div
                             onClick={() => setShowStatistics(false)}
                             className={styles.dialogCloseButton}
                         >
-                            <img src="icons/contract.svg" />
+                            <img src="icons/ranking.svg" />
                         </div>
+                        <p>{t("statistics.ranking")}</p>
                     </div>
                     <table className={styles.statisticsTable}>
                         <thead>
@@ -62,15 +72,13 @@ export const StatisticsComponent = () => {
                     </table>
                 </div>
             )}
-            {!showStatistics && (
-                <div
-                    onClick={() => setShowStatistics(true)}
-                    className={styles.dialogOpenButton}
-                    style={{ top: "calc(2% + 4rem)" }}
-                >
-                    <img src="icons/ranking.svg" />
-                </div>
-            )}
+            <div
+                onClick={() => setShowStatistics((prev) => !prev)}
+                className={styles.dialogOpenButton}
+                style={{ top: "calc(2% + 4rem)" }}
+            >
+                <img src="icons/ranking.svg" />
+            </div>
         </>
     );
 };
