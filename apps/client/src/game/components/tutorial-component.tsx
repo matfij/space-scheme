@@ -45,7 +45,7 @@ export const TutorialComponent = () => {
                 </div>
             )}
             <div
-                onClick={() => setShowTutorial(true)}
+                onClick={() => setShowTutorial((prev) => !prev)}
                 className={styles.dialogOpenButton}
                 style={{ top: "calc(2% + 8rem)" }}
             >
