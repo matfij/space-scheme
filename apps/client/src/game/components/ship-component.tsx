@@ -1,8 +1,9 @@
 import { GAME_SHIPS } from "@space/shared";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGameStore } from "../../common/game-store";
+import { useUiStore } from "../../common/ui-store";
 import { useDraggable } from "../../common/use-draggable";
 
 import styles from "../game-component.module.scss";
@@ -10,10 +11,15 @@ import styles from "../game-component.module.scss";
 export const ShipComponent = () => {
     const { t } = useTranslation();
     const { ship, shipGuid } = useGameStore();
-    const [showShip, setShowShip] = useState(false);
-    const { position, handlers } = useDraggable();
+    const { shipDialog, setShipDialog } = useUiStore();
+    const [showShip, setShowShip] = useState(shipDialog.visible);
+    const { position, dragHandlers } = useDraggable({ x: shipDialog.x, y: shipDialog.y });
 
     const resource = shipGuid ? GAME_SHIPS[shipGuid] : undefined;
+
+    useEffect(() => {
+        setShipDialog({ visible: showShip, x: position.x, y: position.y });
+    }, [showShip, position, setShipDialog]);
 
     if (!resource) {
         return <></>;
@@ -36,7 +42,7 @@ export const ShipComponent = () => {
                         transform: `translate(${position.x}px, ${position.y}px)`,
                     }}
                 >
-                    <div {...handlers} className={styles.dialogHeader}>
+                    <div {...dragHandlers} className={styles.dialogHeader}>
                         <div
                             onClick={() => setShowShip(false)}
                             className={styles.dialogCloseButton}

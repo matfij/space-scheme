@@ -1,14 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useUiStore } from "../../common/ui-store";
 import { useDraggable } from "../../common/use-draggable";
 
 import styles from "../game-component.module.scss";
 
 export const TutorialComponent = () => {
     const { t } = useTranslation();
-    const [showTutorial, setShowTutorial] = useState(true);
-    const { position, handlers } = useDraggable();
+    const { controlsDialog, setControlsDialog } = useUiStore();
+    const [showTutorial, setShowTutorial] = useState(controlsDialog.visible);
+    const { position, dragHandlers } = useDraggable({
+        x: controlsDialog.x,
+        y: controlsDialog.y,
+    });
+
+    useEffect(() => {
+        setControlsDialog({ visible: showTutorial, x: position.x, y: position.y });
+    }, [showTutorial, position, setControlsDialog]);
 
     return (
         <>
@@ -22,7 +31,7 @@ export const TutorialComponent = () => {
                         transform: `translate(${position.x}px, ${position.y}px)`,
                     }}
                 >
-                    <div {...handlers} className={styles.dialogHeader}>
+                    <div {...dragHandlers} className={styles.dialogHeader}>
                         <div
                             onClick={() => setShowTutorial(false)}
                             className={styles.dialogCloseButton}

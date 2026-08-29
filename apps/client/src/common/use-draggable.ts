@@ -36,6 +36,6 @@ export const useDraggable = (initial = { x: 0, y: 0 }) => {
 
     return {
         position,
-        handlers: { onPointerDown, onPointerMove, onPointerUp },
+        dragHandlers: { onPointerDown, onPointerMove, onPointerUp },
     };
 };

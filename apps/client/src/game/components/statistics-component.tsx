@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGameStore } from "../../common/game-store";
+import { useUiStore } from "../../common/ui-store";
 import { useDraggable } from "../../common/use-draggable";
 
 import styles from "../game-component.module.scss";
@@ -9,8 +10,16 @@ import styles from "../game-component.module.scss";
 export const StatisticsComponent = () => {
     const { t } = useTranslation();
     const { statistics } = useGameStore();
-    const [showStatistics, setShowStatistics] = useState(false);
-    const { position, handlers } = useDraggable();
+    const { statisticsDialog, setStatisticsDialog } = useUiStore();
+    const [showStatistics, setShowStatistics] = useState(statisticsDialog.visible);
+    const { position, dragHandlers } = useDraggable({
+        x: statisticsDialog.x,
+        y: statisticsDialog.y,
+    });
+
+    useEffect(() => {
+        setStatisticsDialog({ visible: showStatistics, x: position.x, y: position.y });
+    }, [showStatistics, position, setStatisticsDialog]);
 
     const leaderboard = useMemo(
         () =>
@@ -41,7 +50,7 @@ export const StatisticsComponent = () => {
                         transform: `translate(${position.x}px, ${position.y}px)`,
                     }}
                 >
-                    <div {...handlers} className={styles.dialogHeader}>
+                    <div {...dragHandlers} className={styles.dialogHeader}>
                         <div
                             onClick={() => setShowStatistics(false)}
                             className={styles.dialogCloseButton}
