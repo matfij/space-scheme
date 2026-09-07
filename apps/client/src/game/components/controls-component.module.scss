@@ -7,12 +7,13 @@
     width: 8rem;
     height: 8rem;
     border-radius: $radius-full !important;
+    touch-action: none;
 }
 
 .joystickItem {
+    position: absolute;
     width: 2rem;
     height: 2rem;
-    content: " ";
     background: $color-light-300;
     border: 2px solid rgba($color-dark-200, 0.2);
     border-radius: $radius-full;
