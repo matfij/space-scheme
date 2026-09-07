@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 
-import { GameManger } from "./game-manager";
+import { ControlsComponent } from "./components/controls-component";
 import { ShipComponent } from "./components/ship-component";
 import { StatisticsComponent } from "./components/statistics-component";
 import { TutorialComponent } from "./components/tutorial-component";
+import { GameManger } from "./game-manager";
 
 import styles from "./game-component.module.scss";
 
@@ -37,6 +38,7 @@ export const GameComponent = () => {
         <>
             <ShipComponent />
             <StatisticsComponent />
+            <ControlsComponent />
             <TutorialComponent />
             <div ref={containerRef} className={styles.gameWrapper} />
         </>

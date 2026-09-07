@@ -1,0 +1,19 @@
+@use "../../common//variables.scss" as *;
+@use "../game-component.module.scss";
+
+.joystickWrapper {
+    left: 1rem;
+    bottom: 1rem;
+    width: 8rem;
+    height: 8rem;
+    border-radius: $radius-full !important;
+}
+
+.joystickItem {
+    width: 2rem;
+    height: 2rem;
+    content: " ";
+    background: $color-light-300;
+    border: 2px solid rgba($color-dark-200, 0.2);
+    border-radius: $radius-full;
+}
