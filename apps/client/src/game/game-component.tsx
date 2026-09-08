@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { ControlsComponent } from "./components/controls-component";
 import { ShipComponent } from "./components/ship-component";
@@ -9,6 +9,7 @@ import { GameManger } from "./game-manager";
 import styles from "./game-component.module.scss";
 
 export const GameComponent = () => {
+    const gameManager = useRef<GameManger>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -16,29 +17,39 @@ export const GameComponent = () => {
         if (!containerRef.current) {
             return;
         }
-        const game = new GameManger();
+
+        const manager = new GameManger();
+        gameManager.current = manager;
+
         (async () => {
-            await game.initialize(
+            await manager.initialize(
                 containerRef.current as HTMLDivElement,
                 import.meta.env.VITE_BASE_URL,
             );
             if (disposed) {
-                game.destroy();
+                manager.destroy();
                 return;
             }
         })();
 
         return () => {
             disposed = true;
-            game.destroy();
+            manager.destroy();
+            if (gameManager.current === manager) {
+                gameManager.current = null;
+            }
         };
+    }, []);
+
+    const onJoystickKeys = useCallback((keys: string[]) => {
+        gameManager.current?.sendJoystickKeys(keys);
     }, []);
 
     return (
         <>
             <ShipComponent />
             <StatisticsComponent />
-            <ControlsComponent />
+            <ControlsComponent sendKeys={onJoystickKeys} />
             <TutorialComponent />
             <div ref={containerRef} className={styles.gameWrapper} />
         </>

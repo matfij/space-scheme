@@ -91,6 +91,17 @@ export class GameManger {
         this.keys.delete(event.code);
     };
 
+    public sendJoystickKeys(keys: string[]) {
+        if (this.ws?.readyState === WebSocket.OPEN) {
+            this.ws.send(
+                safeSerialize({
+                    type: "control",
+                    data: { playerId: this.playerId, inputs: Array.from(keys) },
+                }),
+            );
+        }
+    }
+
     private sendInput() {
         if (this.ws?.readyState === WebSocket.OPEN) {
             this.ws.send(
